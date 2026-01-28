@@ -12,6 +12,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent.parent
 SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-change-this-in-production')
 
 DJANGO_APPS = [
+    'jazzmin',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -40,7 +41,8 @@ THIRD_PARTY_APPS = [
 
 LOCAL_APPS = [
     'apps.accounts',
-    'apps.core'
+    'apps.core',
+    'apps.property'
 ]
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
@@ -79,14 +81,20 @@ WSGI_APPLICATION = 'config.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': os.environ.get('DB_NAME', 'drf_boilerplate'),
+#         'USER': os.environ.get('DB_USER', 'postgres'),
+#         'PASSWORD': os.environ.get('DB_PASSWORD', 'postgres'),
+#         'HOST': os.environ.get('DB_HOST', 'localhost'),
+#         'PORT': os.environ.get('DB_PORT', '5432'),
+#     }
+# }
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.environ.get('DB_NAME', 'drf_boilerplate'),
-        'USER': os.environ.get('DB_USER', 'postgres'),
-        'PASSWORD': os.environ.get('DB_PASSWORD', 'postgres'),
-        'HOST': os.environ.get('DB_HOST', 'localhost'),
-        'PORT': os.environ.get('DB_PORT', '5432'),
+    "default": {
+        "ENGINE": "django.db.backends.sqlite3",
+        "NAME": BASE_DIR / "db.sqlite3",
     }
 }
 
@@ -320,3 +328,47 @@ LOGGING = {
         },
     },
 }
+DEBUG=True
+
+# ========================================
+# Jazzmin dahsboard Configuration
+# ========================================
+JAZZMIN_SETTINGS = {
+    "site_title": "Real Estate Admin",
+    "site_header": "Real Estate",
+    "site_brand": "RE Admin",
+    "welcome_sign": "Welcome to Real Estate Dashboard",
+    "show_sidebar": True,
+    "navigation_expanded": True,
+    "icons": {
+        "auth": "fas fa-user-lock",
+        "property": "fas fa-building",
+        "property.property": "fas fa-home",
+        "property.agency": "fas fa-store",
+        "property.wilaya": "fas fa-map",
+        "property.commune": "fas fa-map-pin",
+        "property.propertytype": "fas fa-tags",
+        "property.amenity": "fas fa-concierge-bell",
+    },
+    "order_with_respect_to": ["auth", "property", "agency"],
+}
+
+
+JAZZMIN_UI_TWEAKS = {
+    "theme": "flatly",  # cleaner professional theme
+    "dark_mode_theme": "darkly",
+    "navbar_small_text": False,
+    "footer_small_text": True,
+    "body_small_text": False,
+    "brand_small_text": False,
+    "action_small_text": True,
+    "button_small_text": False,
+    "input_small_text": False,
+    "table_small_text": False,
+    "accent": "accent-primary",
+    "show_sidebar": True,
+    "navigation_expanded": True,
+    "custom_css": None,
+    "custom_js": None,
+}
+
