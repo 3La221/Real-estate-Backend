@@ -1,6 +1,7 @@
 import uuid
 from django.db import models
 from django.utils.text import slugify
+from cloudinary.models import CloudinaryField
 
 from apps.accounts.models import User
 from apps.core.models import Tenant
@@ -59,8 +60,8 @@ class Agency(models.Model):
     commune = models.ForeignKey(Commune,on_delete=models.CASCADE,related_name="agencies")
     address = models.CharField(max_length=255, blank=True)
 
-    logo = models.ImageField(upload_to=agency_upload_path, blank=True, null=True)
-    cover_image = models.ImageField(upload_to=agency_upload_path, blank=True, null=True)
+    logo = CloudinaryField('agency_logo', folder='agencies/logos', blank=True, null=True)
+    cover_image = CloudinaryField('agency_cover', folder='agencies/covers', blank=True, null=True)
 
     facebook = models.URLField(blank=True)
     instagram = models.URLField(blank=True)
@@ -281,11 +282,30 @@ class PropertyMedia(models.Model):
         on_delete=models.CASCADE
     )
     order = models.PositiveSmallIntegerField(default=0)
-    image = models.ImageField(upload_to=property_media_upload_path)
+    image = CloudinaryField(
+        'property_image',
+        folder='properties',
+        transformation={
+            'quality': 'auto',
+            'fetch_format': 'auto'
+        }
+    )
     is_cover = models.BooleanField(default=False)
+
+    class Meta:
+        ordering = ['order', 'id']
 
     def __str__(self):
         return f"Media for {self.property.title}"
+    
+    def save(self, *args, **kwargs):
+        # If this is marked as cover, unset other cover images
+        if self.is_cover:
+            PropertyMedia.objects.filter(
+                property=self.property,
+                is_cover=True
+            ).exclude(id=self.id).update(is_cover=False)
+        super().save(*args, **kwargs)
 
 class Amenity(models.Model):
     name = models.CharField(max_length=100)
