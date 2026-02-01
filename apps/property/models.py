@@ -3,6 +3,7 @@ from django.db import models
 from django.utils.text import slugify
 
 from apps.accounts.models import User
+from apps.core.models import Tenant
 
 # Create your models here.
 class Commune(models.Model):
@@ -31,14 +32,24 @@ def agency_upload_path(instance, filename):
     return f"agencies/{instance.slug}/{filename}"
 
 class Agency(models.Model):
+    
+    tenant = models.OneToOneField(
+        Tenant,
+        on_delete=models.CASCADE,
+        related_name="agency",
+        db_index=True,
+        default=None,
+        help_text="Tenant this agency belongs to (one-to-one)"
+    )
 
     owner = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
-        related_name="agencies"
+        related_name="owned_agencies",
+        help_text="Primary contact/owner of the agency"
     )
     name = models.CharField(max_length=150)
-    slug = models.SlugField(unique=True) # in case don't want a domain for him
+    slug = models.SlugField(unique=True)
 
     description = models.TextField(blank=True)
 
@@ -64,7 +75,7 @@ class Agency(models.Model):
     
     def save(self, *args, **kwargs):
         if not self.slug:
-            base = slugify(self.name)       # in case the user didn't provide a slug, this would create one from the name <aymen immobilier -> aymen-immobilier>
+            base = slugify(self.name)     
             slug = base
             i = 1
             while Agency.objects.filter(slug=slug).exists():
@@ -108,7 +119,7 @@ class AgencyContact(models.Model):
     def __str__(self):
         return f"{self.agency.name} - {self.type}: {self.number}"
     
-    def save(self, *args, **kwargs): # enforces one primary contact per type
+    def save(self, *args, **kwargs): 
         if self.is_primary:
             AgencyContact.objects.filter(
                 agency=self.agency,
@@ -135,7 +146,7 @@ class PropertyType(models.Model):
     
     def save(self, *args, **kwargs):
         if not self.slug:
-            base = slugify(self.name)       # in case the user didn't provide a slug, this would create one from the name <aymen immobilier -> aymen-immobilier>
+            base = slugify(self.name)      
             slug = base
             i = 1
             while PropertyType.objects.filter(slug=slug).exists():
@@ -207,9 +218,8 @@ class Property(models.Model):
     )
 
     negotiable = models.BooleanField(default=False)
-    available_from = models.DateField(null=True, blank=True) # for rent only in case there is still a tenants until a certain date
+    available_from = models.DateField(null=True, blank=True) 
 
-    # Location
     wilaya = models.ForeignKey(
         Wilaya,
         on_delete=models.CASCADE,
@@ -224,7 +234,6 @@ class Property(models.Model):
     latitude = models.DecimalField(max_digits=9, decimal_places=6, null=True, blank=True)
     longitude = models.DecimalField(max_digits=9, decimal_places=6, null=True, blank=True)
 
-    # Details
     area_m2 = models.PositiveIntegerField()
     bedrooms = models.PositiveSmallIntegerField(null=True, blank=True)
     bathrooms = models.PositiveSmallIntegerField(null=True, blank=True)
@@ -233,11 +242,9 @@ class Property(models.Model):
     furnished = models.BooleanField(default=False)
     parking = models.BooleanField(default=False)
 
-    # Portfolio controls
     is_published = models.BooleanField(default=True,db_index=True)
     is_featured = models.BooleanField(default=False,db_index=True)
 
-    # Reference code (useful for WhatsApp & calls)
     reference = models.CharField(
         max_length=20,
         unique=True,
@@ -247,7 +254,7 @@ class Property(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
-    views_count = models.PositiveIntegerField(default=0) # need to be protected in the service layer by session based tokens 
+    views_count = models.PositiveIntegerField(default=0)
     leads_count = models.PositiveIntegerField(default=0)
 
 
@@ -280,7 +287,7 @@ class PropertyMedia(models.Model):
     def __str__(self):
         return f"Media for {self.property.title}"
 
-class Amenity(models.Model): #features AC , heating , elevator
+class Amenity(models.Model):
     name = models.CharField(max_length=100)
 
     def __str__(self):

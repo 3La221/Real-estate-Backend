@@ -11,9 +11,9 @@ from drf_spectacular.views import (
     SpectacularSwaggerView,
 )
 
-# API URL patterns
 api_v1_patterns = [
     # path('accounts/', include('apps.accounts.urls')), no need for auth for now
+    path('', include('apps.property.urls')),
 ]
 
 urlpatterns = [
@@ -29,12 +29,10 @@ urlpatterns = [
     path('api/redoc/', SpectacularRedocView.as_view(url_name='schema'), name='redoc'),
 ]
 
-# Serve media files in development
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
     
-    # Django Debug Toolbar
     try:
         import debug_toolbar
         urlpatterns += [
