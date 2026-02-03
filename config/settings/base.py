@@ -3,6 +3,7 @@ Base settings for Django project.
 This file contains settings common to all environments.
 """
 import os
+from dotenv import load_dotenv
 from pathlib import Path
 from datetime import timedelta
 
@@ -144,7 +145,7 @@ MEDIA_ROOT = BASE_DIR / 'media'
 import cloudinary
 import cloudinary.uploader
 import cloudinary.api
-
+load_dotenv()
 CLOUDINARY_STORAGE = {
     'CLOUD_NAME': os.environ.get('CLOUDINARY_CLOUD_NAME', ''),
     'API_KEY': os.environ.get('CLOUDINARY_API_KEY', ''),
@@ -189,10 +190,15 @@ REST_FRAMEWORK = {
         'rest_framework.parsers.MultiPartParser',
         'rest_framework.parsers.FormParser',
     ],
+    "DEFAULT_FILTER_BACKENDS": [
+        "django_filters.rest_framework.DjangoFilterBackend",
+    ],
     'EXCEPTION_HANDLER': 'apps.core.exceptions.custom_exception_handler',
     'NON_FIELD_ERRORS_KEY': 'error',
     'DATETIME_FORMAT': '%Y-%m-%d %H:%M:%S',
     'DATE_FORMAT': '%Y-%m-%d',
+    "DEFAULT_PAGINATION_CLASS":
+        "config.pagination.StandardPagination",
 }
 
 # ========================================

@@ -4,6 +4,8 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from django_filters.rest_framework import DjangoFilterBackend
 
+from config.pagination import StandardPagination
+
 from .models import Property
 from .serializers import (
     PropertyListSerializer,
@@ -21,6 +23,7 @@ class PropertyViewSet(TenantFilterMixin, viewsets.ReadOnlyModelViewSet):
     ).prefetch_related('media')
     permission_classes = []
     filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
+    pagination_class = StandardPagination
     
 
     filterset_fields = {
