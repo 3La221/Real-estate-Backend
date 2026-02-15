@@ -1,0 +1,537 @@
+{% extends 'base.html' %}
+
+
+{% load static %}
+{% static "assets/img/breadcrumb.jpg" as breadcrumb_bg %}
+
+
+{% block title %}BHouse - Real Estate HTML5 Template{% endblock %}
+
+{% block content %}
+
+
+	<!-- Start Header Area -->
+
+	<!-- End Header Area -->
+	<!-- Start Mobile Menu Area -->
+	<div class="mobile-menu-area">
+		
+		<!--offcanvas menu area start-->
+	    <div class="off_canvars_overlay">
+	                
+	    </div>
+	    <div class="offcanvas_menu">
+	        <div class="offcanvas_menu_wrapper">
+	            <div class="canvas_close">
+	                <a href="javascript:void(0)"><i class="fas fa-times"></i></a>  
+	            </div>
+	            <div class="mobile-logo">
+	            	<a href="index.html">
+	            		<img src="assets/img/logo.png" alt="logo">
+	            	</a>
+	            </div>
+	            <div id="menu" class="text-left ">
+	                <ul class="offcanvas_main_menu">
+	                    <li class="menu-item-has-children active">
+	                        <a href="#">Home</a>
+	                        <ul class="sub-menu">
+	                            <li><a href="index.html">Home Style 01</a></li>
+								<li><a href="index2.html">Home Style 02</a></li>
+								<li><a href="index3.html">Home Style 03</a></li>
+								<li><a href="index4.html">Home Style 04</a></li>
+								<li><a href="index5.html">Home Style 05</a></li>
+	                        </ul>
+	                    </li>
+	                    <li class="menu-item-has-children">
+	                        <a href="about.html"> About Us</a> 
+	                    </li>
+	                    <li class="menu-item-has-children">
+	                        <a href="#">Page</a>
+	                        <ul class="sub-menu">
+	                        	<li class="menu-item-has-children">
+	                        		<a href="#">Team</a>
+	                        		<ul class="sub-menu">
+	                        			<li><a href="team.html">Team Styel 1</a></li>
+										<li><a href="team-2.html">Team Styel 2</a></li>
+	                        		</ul>
+	                        	</li>
+	                        	<li><a href="pricing.html">Pricing Plane</a></li>
+	                        	<li class="menu-item-has-children">
+									<a href="#">Services</a>
+									<ul class="sub-menu">
+										<li><a href="services.html">Services</a></li>
+										<li><a href="services-details.html">Services Details</a></li>
+									</ul>
+								</li>
+								<li class="menu-item-has-children">
+									<a href="#">Portfolio</a>
+									<ul class="sub-menu">
+										<li><a href="porfolio.html">Portfolio</a></li>
+										<li><a href="porfolio-details.html">Portfolio Details</a></li>
+									</ul>
+								</li>
+								<li class="menu-item-has-children">
+									<a href="#">Shop</a>
+									<ul class="sub-menu">
+										<li><a href="cart.html">Cart</a></li>
+										<li><a href="checkout.html">Checkout</a></li>
+										<li><a href="wishlist.html">Wishlist</a></li>
+									</ul>
+								</li>
+								<li class="menu-item-has-children">
+									<a href="#">User</a>
+									<ul class="sub-menu">
+										<li><a href="login.html">Login</a></li>
+										<li><a href="register.html">Register</a></li>
+										<li><a href="forget-password.html">Forget Password</a></li>
+										<li><a href="account.html">My Account</a></li>
+									</ul>
+								</li>
+								<li><a href="faq.html">Faq</a></li>
+								<li><a href="404.html">404 Error</a></li>
+	                        </ul>
+	                    </li>
+	                    <li class="menu-item-has-children">
+	                        <a href="#">Shop</a>
+	                        <ul class="sub-menu">
+	                        	<li><a href="shop.html">Shop</a></li>
+								<li><a href="shop-grid.html">Shop Grid</a></li>
+								<li><a href="shop-2-column.html">Shop 2 Columns</a></li>
+								<li><a href="shop-left-sidebar.html">Shop Left Sidebar</a></li>
+								<li><a href="shop-right-sidebar.html">Shop Right Sidebar</a></li>
+								<li><a href="product-details.html">Single Products</a></li>
+	                        </ul>
+	                    </li>
+	                    <li class="menu-item-has-children">
+	                        <a href="#">Blog</a>
+	                        <ul class="sub-menu">
+	                        	<li><a href="blog.html">Blog</a></li>
+								<li><a href="blog-grid.html">Blog Grid</a></li>
+								<li><a href="blog-left-sidebar.html">Blog Left Sidebar</a></li>
+								<li><a href="blog-right-sidebar.html">Blog Right Sidebar</a></li>
+								<li><a href="single.html">Blog Details</a></li>
+	                        </ul>
+	                    </li>
+	                    <li class="menu-item-has-children">
+	                        <a href="contact.html"> Contact Us</a> 
+	                    </li>
+	                </ul>
+	            </div>
+	        </div>
+	    </div>
+    </div>
+    <!--offcanvas menu area end-->
+	<!-- Start Breadcrumb Area -->
+	<section class="breadcrumb-area section-padding" style="background-image:url('assets/img/breadcrumb.jpg');">
+		<div class="container">
+			<div class="row">
+				<div class="col-lg-12">
+					<div class="breadcrumb-content">
+						<h2>Shop Grid</h2>
+						<ul>
+							<li><a href="index.html">Home</a></li>
+							<li><i class="fas fa-angle-double-right"></i></li>
+							<li>Shop Grid</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+	<!-- End Breadcrumb Area -->
+	
+	<!-- Start Shop Area -->
+	<section class="section-padding">
+		<div class="container">
+			<!-- Shop Top Bar -->
+			<div class="row mb-30">
+				<div class="col-lg-12">
+					<div class="ltn__shop-options">
+						<div class="list-single">
+							<div class="showing-product-number text-left">
+                                <span><strong>Search Reasults:</strong> Showing 1–12 of 18 results</span>
+                            </div>
+						</div>
+						<div class="list-single text-right">
+							<div class="woo-product-shorting">
+								<select name="sort">
+									<option value="0">Default Sorting</option>
+									<option value="1">Sort by popularity</option>
+									<option value="2">Sort by new arrivals</option>
+									<option value="3">Sort by price: low to high</option>
+									<option value="4">Sort by price: high to low</option>
+								</select>
+                            </div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- Shop -->
+			<div class="row">
+				<!-- Single -->
+				<div class="col-lg-4 col-md-6 mb-30">
+					<div class="product-item">
+						<!-- Thumbnail -->
+						<div class="thumbnail">
+							<a href="product-details.html">
+								<img src="assets/img/product/1.jpg" alt="img">
+							</a>
+							<div class="badge">
+								<span>Featured</span>
+							</div>
+							<div class="product-overly">
+								<ul>
+									<li><a href="product-details.html" title="Views:2021"><i class="bi bi-eye"></i></a></li>
+									<li><a href="#" title="Wishlist"><i class="bi bi-suit-heart"></i></a></li>
+									<li><a href="#" title="Add to Cart"><i class="bi bi-cart3"></i></a></li>
+								</ul>
+							</div>
+						</div>
+						<!-- Content -->
+						<div class="content">
+							<div class="user-thum">
+								<img src="assets/img/user-1.png" alt="img">
+							</div>
+							<h2 class="title"><a href="product-details.html">Riqaza Apartment Montreal</a></h2>
+							<p class="location">Resort Valley Ocs, USA</p>
+							<div class="price">
+								<span>$ 256,000 <small>/mo</small></span>
+							</div>
+						</div>
+						<div class="property-lists">
+							<ul>
+								<li><i class="fas fa-bed"></i> <span>3 Beds</span></li>
+								<li><i class="fas fa-bath"></i> <span>2 Baths</span></li>
+								<li><i class="fas fa-vector-square"></i> <span>600 Sq Ft</span></li>
+							</ul>
+						</div>
+					</div>
+				</div>
+				<!-- Single -->
+				<div class="col-lg-4 col-md-6 mb-30">
+					<div class="product-item">
+						<!-- Thumbnail -->
+						<div class="thumbnail">
+							<a href="product-details.html">
+								<img src="assets/img/product/2.jpg" alt="img">
+							</a>
+							<div class="product-overly">
+								<ul>
+									<li><a href="product-details.html" title="Views:2021"><i class="bi bi-eye"></i></a></li>
+									<li><a href="#" title="Wishlist"><i class="bi bi-suit-heart"></i></a></li>
+									<li><a href="#" title="Add to Cart"><i class="bi bi-cart3"></i></a></li>
+								</ul>
+							</div>
+						</div>
+						<!-- Content -->
+						<div class="content">
+							<div class="user-thum">
+								<img src="assets/img/user-1.png" alt="img">
+							</div>
+							<h2 class="title"><a href="product-details.html">Riqaza Apartment Montreal</a></h2>
+							<p class="location">Resort Valley Ocs, USA</p>
+							<div class="price">
+								<span>$ 256,000 <small>/mo</small></span>
+							</div>
+						</div>
+						<div class="property-lists">
+							<ul>
+								<li><i class="fas fa-bed"></i> <span>3 Beds</span></li>
+								<li><i class="fas fa-bath"></i> <span>2 Baths</span></li>
+								<li><i class="fas fa-vector-square"></i> <span>600 Sq Ft</span></li>
+							</ul>
+						</div>
+					</div>
+				</div>
+				<!-- Single -->
+				<div class="col-lg-4 col-md-6 mb-30">
+					<div class="product-item">
+						<!-- Thumbnail -->
+						<div class="thumbnail">
+							<a href="product-details.html">
+								<img src="assets/img/product/3.jpg" alt="img">
+							</a>
+							<div class="badge">
+								<span>Sale</span>
+							</div>
+							<div class="product-overly">
+								<ul>
+									<li><a href="product-details.html" title="Views:2021"><i class="bi bi-eye"></i></a></li>
+									<li><a href="#" title="Wishlist"><i class="bi bi-suit-heart"></i></a></li>
+									<li><a href="#" title="Add to Cart"><i class="bi bi-cart3"></i></a></li>
+								</ul>
+							</div>
+						</div>
+						<!-- Content -->
+						<div class="content">
+							<div class="user-thum">
+								<img src="assets/img/user-1.png" alt="img">
+							</div>
+							<h2 class="title"><a href="product-details.html">Riqaza Apartment Montreal</a></h2>
+							<p class="location">Resort Valley Ocs, USA</p>
+							<div class="price">
+								<span>$ 256,000 <small>/mo</small></span>
+							</div>
+						</div>
+						<div class="property-lists">
+							<ul>
+								<li><i class="fas fa-bed"></i> <span>3 Beds</span></li>
+								<li><i class="fas fa-bath"></i> <span>2 Baths</span></li>
+								<li><i class="fas fa-vector-square"></i> <span>600 Sq Ft</span></li>
+							</ul>
+						</div>
+					</div>
+				</div>
+				<!-- Single -->
+				<div class="col-lg-4 col-md-6 mb-30">
+					<div class="product-item">
+						<!-- Thumbnail -->
+						<div class="thumbnail">
+							<a href="product-details.html">
+								<img src="assets/img/product/4.jpg" alt="img">
+							</a>
+							<div class="product-overly">
+								<ul>
+									<li><a href="product-details.html" title="Views:2021"><i class="bi bi-eye"></i></a></li>
+									<li><a href="#" title="Wishlist"><i class="bi bi-suit-heart"></i></a></li>
+									<li><a href="#" title="Add to Cart"><i class="bi bi-cart3"></i></a></li>
+								</ul>
+							</div>
+						</div>
+						<!-- Content -->
+						<div class="content">
+							<div class="user-thum">
+								<img src="assets/img/user-1.png" alt="img">
+							</div>
+							<h2 class="title"><a href="product-details.html">Riqaza Apartment Montreal</a></h2>
+							<p class="location">Resort Valley Ocs, USA</p>
+							<div class="price">
+								<span>$ 256,000 <small>/mo</small></span>
+							</div>
+						</div>
+						<div class="property-lists">
+							<ul>
+								<li><i class="fas fa-bed"></i> <span>3 Beds</span></li>
+								<li><i class="fas fa-bath"></i> <span>2 Baths</span></li>
+								<li><i class="fas fa-vector-square"></i> <span>600 Sq Ft</span></li>
+							</ul>
+						</div>
+					</div>
+				</div>
+				<!-- Single -->
+				<div class="col-lg-4 col-md-6 mb-30">
+					<div class="product-item">
+						<!-- Thumbnail -->
+						<div class="thumbnail">
+							<a href="product-details.html">
+								<img src="assets/img/product/5.jpg" alt="img">
+							</a>
+							<div class="badge">
+								<span>Top</span>
+							</div>
+							<div class="product-overly">
+								<ul>
+									<li><a href="product-details.html" title="Views:2021"><i class="bi bi-eye"></i></a></li>
+									<li><a href="#" title="Wishlist"><i class="bi bi-suit-heart"></i></a></li>
+									<li><a href="#" title="Add to Cart"><i class="bi bi-cart3"></i></a></li>
+								</ul>
+							</div>
+						</div>
+						<!-- Content -->
+						<div class="content">
+							<div class="user-thum">
+								<img src="assets/img/user-1.png" alt="img">
+							</div>
+							<h2 class="title"><a href="product-details.html">Riqaza Apartment Montreal</a></h2>
+							<p class="location">Resort Valley Ocs, USA</p>
+							<div class="price">
+								<span>$ 256,000 <small>/mo</small></span>
+							</div>
+						</div>
+						<div class="property-lists">
+							<ul>
+								<li><i class="fas fa-bed"></i> <span>3 Beds</span></li>
+								<li><i class="fas fa-bath"></i> <span>2 Baths</span></li>
+								<li><i class="fas fa-vector-square"></i> <span>600 Sq Ft</span></li>
+							</ul>
+						</div>
+					</div>
+				</div>
+				<!-- Single -->
+				<div class="col-lg-4 col-md-6 mb-30">
+					<div class="product-item">
+						<!-- Thumbnail -->
+						<div class="thumbnail">
+							<a href="product-details.html">
+								<img src="assets/img/product/6.jpg" alt="img">
+							</a>
+							<div class="badge">
+								<span>Featured</span>
+							</div>
+							<div class="product-overly">
+								<ul>
+									<li><a href="product-details.html" title="Views:2021"><i class="bi bi-eye"></i></a></li>
+									<li><a href="#" title="Wishlist"><i class="bi bi-suit-heart"></i></a></li>
+									<li><a href="#" title="Add to Cart"><i class="bi bi-cart3"></i></a></li>
+								</ul>
+							</div>
+						</div>
+						<!-- Content -->
+						<div class="content">
+							<div class="user-thum">
+								<img src="assets/img/user-1.png" alt="img">
+							</div>
+							<h2 class="title"><a href="product-details.html">Riqaza Apartment Montreal</a></h2>
+							<p class="location">Resort Valley Ocs, USA</p>
+							<div class="price">
+								<span>$ 256,000 <small>/mo</small></span>
+							</div>
+						</div>
+						<div class="property-lists">
+							<ul>
+								<li><i class="fas fa-bed"></i> <span>3 Beds</span></li>
+								<li><i class="fas fa-bath"></i> <span>2 Baths</span></li>
+								<li><i class="fas fa-vector-square"></i> <span>600 Sq Ft</span></li>
+							</ul>
+						</div>
+					</div>
+				</div>
+				<!-- Single -->
+				<div class="col-lg-4 col-md-6 mb-30">
+					<div class="product-item">
+						<!-- Thumbnail -->
+						<div class="thumbnail">
+							<a href="product-details.html">
+								<img src="assets/img/product/7.jpg" alt="img">
+							</a>
+							<div class="badge">
+								<span>Sale</span>
+							</div>
+							<div class="product-overly">
+								<ul>
+									<li><a href="product-details.html" title="Views:2021"><i class="bi bi-eye"></i></a></li>
+									<li><a href="#" title="Wishlist"><i class="bi bi-suit-heart"></i></a></li>
+									<li><a href="#" title="Add to Cart"><i class="bi bi-cart3"></i></a></li>
+								</ul>
+							</div>
+						</div>
+						<!-- Content -->
+						<div class="content">
+							<div class="user-thum">
+								<img src="assets/img/user-1.png" alt="img">
+							</div>
+							<h2 class="title"><a href="product-details.html">Riqaza Apartment Montreal</a></h2>
+							<p class="location">Resort Valley Ocs, USA</p>
+							<div class="price">
+								<span>$ 256,000 <small>/mo</small></span>
+							</div>
+						</div>
+						<div class="property-lists">
+							<ul>
+								<li><i class="fas fa-bed"></i> <span>3 Beds</span></li>
+								<li><i class="fas fa-bath"></i> <span>2 Baths</span></li>
+								<li><i class="fas fa-vector-square"></i> <span>600 Sq Ft</span></li>
+							</ul>
+						</div>
+					</div>
+				</div>
+				<!-- Single -->
+				<div class="col-lg-4 col-md-6 mb-30">
+					<div class="product-item">
+						<!-- Thumbnail -->
+						<div class="thumbnail">
+							<a href="product-details.html">
+								<img src="assets/img/product/8.jpg" alt="img">
+							</a>
+							<div class="product-overly">
+								<ul>
+									<li><a href="product-details.html" title="Views:2021"><i class="bi bi-eye"></i></a></li>
+									<li><a href="#" title="Wishlist"><i class="bi bi-suit-heart"></i></a></li>
+									<li><a href="#" title="Add to Cart"><i class="bi bi-cart3"></i></a></li>
+								</ul>
+							</div>
+						</div>
+						<!-- Content -->
+						<div class="content">
+							<div class="user-thum">
+								<img src="assets/img/user-1.png" alt="img">
+							</div>
+							<h2 class="title"><a href="product-details.html">Riqaza Apartment Montreal</a></h2>
+							<p class="location">Resort Valley Ocs, USA</p>
+							<div class="price">
+								<span>$ 256,000 <small>/mo</small></span>
+							</div>
+						</div>
+						<div class="property-lists">
+							<ul>
+								<li><i class="fas fa-bed"></i> <span>3 Beds</span></li>
+								<li><i class="fas fa-bath"></i> <span>2 Baths</span></li>
+								<li><i class="fas fa-vector-square"></i> <span>600 Sq Ft</span></li>
+							</ul>
+						</div>
+					</div>
+				</div>
+				<!-- Single -->
+				<div class="col-lg-4 col-md-6 mb-30">
+					<div class="product-item">
+						<!-- Thumbnail -->
+						<div class="thumbnail">
+							<a href="product-details.html">
+								<img src="assets/img/product/9.jpg" alt="img">
+							</a>
+							<div class="product-overly">
+								<ul>
+									<li><a href="product-details.html" title="Views:2021"><i class="bi bi-eye"></i></a></li>
+									<li><a href="#" title="Wishlist"><i class="bi bi-suit-heart"></i></a></li>
+									<li><a href="#" title="Add to Cart"><i class="bi bi-cart3"></i></a></li>
+								</ul>
+							</div>
+						</div>
+						<!-- Content -->
+						<div class="content">
+							<div class="user-thum">
+								<img src="assets/img/user-1.png" alt="img">
+							</div>
+							<h2 class="title"><a href="product-details.html">Riqaza Apartment Montreal</a></h2>
+							<p class="location">Resort Valley Ocs, USA</p>
+							<div class="price">
+								<span>$ 256,000 <small>/mo</small></span>
+							</div>
+						</div>
+						<div class="property-lists">
+							<ul>
+								<li><i class="fas fa-bed"></i> <span>3 Beds</span></li>
+								<li><i class="fas fa-bath"></i> <span>2 Baths</span></li>
+								<li><i class="fas fa-vector-square"></i> <span>600 Sq Ft</span></li>
+							</ul>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- Pagination -->
+			<div class="row mt-10 mb-30 text-center">
+				<div class="col-lg-12">
+					<div class="bhouse_pagination">
+						<ul>
+							<li><a href="#"><i class="fas fa-angle-left"></i></a></li>
+							<li><a href="#">1</a></li>
+							<li><span>2</span></li>
+							<li><a href="#">3</a></li>
+							<li><a href="#">4</a></li>
+							<li><a href="#"><i class="fas fa-angle-right"></i></a></li>
+						</ul>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+	<!-- End Shop Area -->
+	
+
+
+	<!-- Start Footer Area -->
+
+	<div class="scroll-area">
+       <i class="bi bi-arrow-up"></i>
+    </div>
+{% endblock %}

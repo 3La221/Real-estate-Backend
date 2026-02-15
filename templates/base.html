@@ -1,0 +1,66 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html class="no-js" lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<title>{% block title %}BHouse - Real Estate HTML5 Template{% endblock %}</title>
+	
+	<!-- Favicon -->
+	<link rel="icon" href="{% static 'assets/img/icon.png' %}" type="image/gif" sizes="16x16">
+	<link rel="icon" href="{% static 'assets/img/icon.png' %}" type="image/gif" sizes="18x18">
+	<link rel="icon" href="{% static 'assets/img/icon.png' %}" type="image/gif" sizes="20x20">
+
+	<!-- CSS Files -->
+	<link rel="stylesheet" href="{% static 'assets/css/bootstrap.min.css' %}">
+	<link rel="stylesheet" href="{% static 'assets/css/bootstrap-icons.css' %}">
+	<link rel="stylesheet" href="{% static 'assets/css/fontawesome.all.min.css' %}">
+	<link rel="stylesheet" href="{% static 'assets/css/owl.carousel.min.css' %}">
+	<link rel="stylesheet" href="{% static 'assets/css/owl.theme.default.min.css' %}">
+	<link rel="stylesheet" href="{% static 'assets/css/nice-select.css' %}">
+	<link rel="stylesheet" href="{% static 'assets/css/vegas.slider.min.css' %}">
+	<link rel="stylesheet" href="{% static 'assets/css/lightcase.css' %}">
+	<link rel="stylesheet" href="{% static 'assets/css/animate.css' %}">
+	<link rel="stylesheet" href="{% static 'assets/css/normalize.css' %}">
+	<link rel="stylesheet" href="{% static 'style.css' %}">
+	<link rel="stylesheet" href="{% static 'assets/css/responsive.css' %}">
+	
+	{% block extra_css %}{% endblock %}
+</head>
+<body>
+	<!-- Preloader -->
+	<div id="preloader">
+		<div class="preloader">
+			<span></span>
+			<span></span>
+		</div>
+	</div>
+	
+	{% include 'partials/navbar.html' %}
+	
+	{% block content %}
+	{% endblock %}
+	
+	{% include 'partials/footer.html' %}
+	
+	<!-- JavaScript Files -->
+	<script src="{% static 'assets/js/modernizr.min.js' %}"></script>
+	<script src="{% static 'assets/js/jquery-3.6.0.min.js' %}"></script>
+	<script src="{% static 'assets/js/popper.min.js' %}"></script>
+	<script src="{% static 'assets/js/bootstrap.min.js' %}"></script>
+	<script src="{% static 'assets/js/owl.carousel.min.js' %}"></script>
+	<script src="{% static 'assets/js/jquery.nice-select.min.js' %}"></script>
+	<script src="{% static 'assets/js/jquery.waypoints.min.js' %}"></script>
+	<script src="{% static 'assets/js/jquery.counterup.min.js' %}"></script>
+	<script src="{% static 'assets/js/vegas.slider.min.js' %}"></script>
+	<script src="{% static 'assets/js/mixitup.min.js' %}"></script>
+	<script src="{% static 'assets/js/lightcase.js' %}"></script>
+	<script src="{% static 'assets/js/wow.min.js' %}"></script>
+	<script src="{% static 'assets/js/mobile-menu.js' %}"></script>
+	<script src="{% static 'assets/js/script.js' %}"></script>
+	
+	{% block extra_js %}{% endblock %}
+</body>
+</html>

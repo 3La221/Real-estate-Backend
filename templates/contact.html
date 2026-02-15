@@ -1,0 +1,234 @@
+{% extends 'base.html' %}
+
+
+{% load static %}
+{% static "assets/img/breadcrumb.jpg" as breadcrumb_bg %}
+
+
+{% block title %}BHouse - Real Estate HTML5 Template{% endblock %}
+
+{% block content %}
+	<!-- Preloader -->
+
+
+	<!-- End Header Area -->
+	<!-- Start Mobile Menu Area -->
+	<div class="mobile-menu-area">
+		
+		<!--offcanvas menu area start-->
+	    <div class="off_canvars_overlay">
+	                
+	    </div>
+	    <div class="offcanvas_menu">
+	        <div class="offcanvas_menu_wrapper">
+	            <div class="canvas_close">
+	                <a href="javascript:void(0)"><i class="fas fa-times"></i></a>  
+	            </div>
+	            <div class="mobile-logo">
+	            	<a href="index.html">
+	            		<img src="assets/img/logo.png" alt="logo">
+	            	</a>
+	            </div>
+	            <div id="menu" class="text-left ">
+	                <ul class="offcanvas_main_menu">
+	                    <li class="menu-item-has-children active">
+	                        <a href="#">Home</a>
+	                        <ul class="sub-menu">
+	                            <li><a href="index.html">Home Style 01</a></li>
+								<li><a href="index2.html">Home Style 02</a></li>
+								<li><a href="index3.html">Home Style 03</a></li>
+								<li><a href="index4.html">Home Style 04</a></li>
+								<li><a href="index5.html">Home Style 05</a></li>
+	                        </ul>
+	                    </li>
+	                    <li class="menu-item-has-children">
+	                        <a href="about.html"> About Us</a> 
+	                    </li>
+	                    <li class="menu-item-has-children">
+	                        <a href="#">Page</a>
+	                        <ul class="sub-menu">
+	                        	<li class="menu-item-has-children">
+	                        		<a href="#">Team</a>
+	                        		<ul class="sub-menu">
+	                        			<li><a href="team.html">Team Styel 1</a></li>
+										<li><a href="team-2.html">Team Styel 2</a></li>
+	                        		</ul>
+	                        	</li>
+	                        	<li><a href="pricing.html">Pricing Plane</a></li>
+	                        	<li class="menu-item-has-children">
+									<a href="#">Services</a>
+									<ul class="sub-menu">
+										<li><a href="services.html">Services</a></li>
+										<li><a href="services-details.html">Services Details</a></li>
+									</ul>
+								</li>
+								<li class="menu-item-has-children">
+									<a href="#">Portfolio</a>
+									<ul class="sub-menu">
+										<li><a href="porfolio.html">Portfolio</a></li>
+										<li><a href="porfolio-details.html">Portfolio Details</a></li>
+									</ul>
+								</li>
+								<li class="menu-item-has-children">
+									<a href="#">Shop</a>
+									<ul class="sub-menu">
+										<li><a href="cart.html">Cart</a></li>
+										<li><a href="checkout.html">Checkout</a></li>
+										<li><a href="wishlist.html">Wishlist</a></li>
+									</ul>
+								</li>
+								<li class="menu-item-has-children">
+									<a href="#">User</a>
+									<ul class="sub-menu">
+										<li><a href="login.html">Login</a></li>
+										<li><a href="register.html">Register</a></li>
+										<li><a href="forget-password.html">Forget Password</a></li>
+										<li><a href="account.html">My Account</a></li>
+									</ul>
+								</li>
+								<li><a href="faq.html">Faq</a></li>
+								<li><a href="404.html">404 Error</a></li>
+	                        </ul>
+	                    </li>
+	                    <li class="menu-item-has-children">
+	                        <a href="#">Shop</a>
+	                        <ul class="sub-menu">
+	                        	<li><a href="shop.html">Shop</a></li>
+								<li><a href="shop-grid.html">Shop Grid</a></li>
+								<li><a href="shop-2-column.html">Shop 2 Columns</a></li>
+								<li><a href="shop-left-sidebar.html">Shop Left Sidebar</a></li>
+								<li><a href="shop-right-sidebar.html">Shop Right Sidebar</a></li>
+								<li><a href="product-details.html">Single Products</a></li>
+	                        </ul>
+	                    </li>
+	                    <li class="menu-item-has-children">
+	                        <a href="#">Blog</a>
+	                        <ul class="sub-menu">
+	                        	<li><a href="blog.html">Blog</a></li>
+								<li><a href="blog-grid.html">Blog Grid</a></li>
+								<li><a href="blog-left-sidebar.html">Blog Left Sidebar</a></li>
+								<li><a href="blog-right-sidebar.html">Blog Right Sidebar</a></li>
+								<li><a href="single.html">Blog Details</a></li>
+	                        </ul>
+	                    </li>
+	                    <li class="menu-item-has-children">
+	                        <a href="contact.html"> Contact Us</a> 
+	                    </li>
+	                </ul>
+	            </div>
+	        </div>
+	    </div>
+    </div>
+    <!--offcanvas menu area end-->
+	<!-- Start Breadcrumb Area -->
+	<section class="breadcrumb-area section-padding" style="background-image:url('assets/img/breadcrumb.jpg');">
+		<div class="container">
+			<div class="row">
+				<div class="col-lg-12">
+					<div class="breadcrumb-content">
+						<h2>Contact Us</h2>
+						<ul>
+							<li><a href="index.html">Home</a></li>
+							<li><i class="fas fa-angle-double-right"></i></li>
+							<li>Contact Us</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+	<!-- End Breadcrumb Area -->
+	
+	<!-- Start Contact Us Area -->
+	<section class="contact-area section-padding">
+		<div class="container">
+			<div class="row">
+				<div class="col-lg-8 align-self-center">
+					<div class="contact-form">
+						<h2>Get In Touch</h2>
+						<form id="contact-form" action="mail.php" method="POST">
+							<div class="row">
+								<div class="col-md-6">
+									<div class="single-input">
+										<input required="required" type="text" name="name" placeholder="Your Name">
+										<i class="fas fa-user"></i>
+									</div>
+								</div>
+								<div class="col-md-6">
+									<div class="single-input">
+										<input required="required" type="email" name="email" placeholder="Your Email">
+										<i class="far fa-envelope"></i>
+									</div>
+								</div>
+								<div class="col-md-6">
+									<div class="single-input">
+										<input type="text" required="required" name="phone" placeholder="Your Phone">
+										<i class="fas fa-mobile-alt"></i>
+									</div>
+								</div>
+								<div class="col-md-6">
+									<div class="single-input">
+										<input type="text" required="required" name="subject" placeholder="Your Subjects">
+										<i class="fas fa-file-alt"></i>
+									</div>
+								</div>
+								<div class="col-12">
+									<div class="single-input">
+										<textarea name="message" required="required" placeholder="Write Message" spellcheck="false"></textarea>
+										<i class="fas fa-pen"></i>
+									</div>
+								</div>
+								<div class="col-12">
+									<button type="submit">Send Message</button>
+								</div>
+							</div>
+						</form>
+						<p class="ajax-response"></p>
+					</div>
+				</div>
+				<div class="col-lg-4 align-self-center">
+					<div class="contact-form-info" style="background-image:url('assets/img/contact.jpg');">
+						<h2>Don't hesitate to contact us</h2>
+						<div class="contact-info-list">
+							<div class="item mb-20">
+								<div class="icon">
+									<i class="fas fa-home"></i>
+								</div>
+								<div class="content">
+									<h4>Locations</h4>
+									<p>2512, New Market, Eliza Road, Sincher 80 CA, Canada, USA </p>
+								</div>
+							</div>
+							<div class="item mb-20">
+								<div class="icon">
+									<i class="far fa-envelope"></i>
+								</div>
+								<div class="content">
+									<h4>Drop A Mail</h4>
+									<p>support@example.com</p>
+									<p>example@gmail.com </p>
+								</div>
+							</div>
+							<div class="item">
+								<div class="icon">
+									<i class="fas fa-mobile-alt"></i>
+								</div>
+								<div class="content">
+									<h4>Call Us</h4>
+									<p> (41) 123 521 458</p>
+									<p>+91 235 548 7548 </p>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+	<!-- End Contact Us Area -->
+
+
+	<div class="scroll-area">
+       <i class="bi bi-arrow-up"></i>
+    </div>
+{% endblock %}
