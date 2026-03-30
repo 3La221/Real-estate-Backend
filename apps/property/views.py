@@ -169,6 +169,7 @@ class PropertyListView(ListView):
         context['total_count'] = self.get_queryset().count()
 
         return context
+    
 def property_detail(request, reference):
     property = get_object_or_404(
         Property.objects.select_related(
@@ -219,7 +220,6 @@ def property_detail(request, reference):
 
     cover = property.media.filter(is_cover=True).first() or property.media.first()
     gallery = property.media.filter(is_cover=False) 
-    print(property.agency.contacts.filter(is_primary=True))
 
     return render(request, 'product-details.html', {
         'property': property,

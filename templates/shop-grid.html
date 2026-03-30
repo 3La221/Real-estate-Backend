@@ -980,7 +980,7 @@
 <!--offcanvas menu area end-->
 
 <!-- Start Breadcrumb Area -->
-<section class="breadcrumb-area section-padding" style="background-image:url('{{ breadcrumb_bg }}');">
+<section class="breadcrumb-area section-padding" style="background-image:url('{{ properties.first.agency.cover_image.url }}');">
     <div class="container">
         <div class="row">
             <div class="col-lg-12">
@@ -1222,7 +1222,7 @@
                             <div class="card-image">
                                 {% with property.media.first as media %}
                                 {% if media %}
-                                    <img src="{{ media.file.url }}" alt="{{ property.title }}" loading="lazy">
+                                    <img src="{{ media.image.url }}" alt="{{ property.title }}" loading="lazy">
                                 {% else %}
                                     <img src="{% static 'assets/img/product/placeholder.jpg' %}" alt="{{ property.title }}">
                                 {% endif %}
@@ -1257,11 +1257,13 @@
                             <div class="card-content">
                                 <div class="card-header">
                                     <h3 class="card-title">
-                                        <a href="">{{ property.title }}</a>
+                                        <a href="{% url 'property_detail' property.reference %}">
+                                            {{ property.title }}
+                                        </a>
                                     </h3>
-                                    {% if property.agency and property.agency.logo %}
+                                    <!-- {% if property.agency and property.agency.logo %}
                                     <img src="{{ property.agency.logo.url }}" alt="{{ property.agency.name }}" class="agency-logo" title="{{ property.agency.name }}">
-                                    {% endif %}
+                                    {% endif %} -->
                                 </div>
 
                                 <div class="card-location">
