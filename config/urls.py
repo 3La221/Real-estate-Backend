@@ -13,6 +13,9 @@ from drf_spectacular.views import (
     SpectacularSwaggerView,
 )
 
+from apps.property import views
+from apps.property.views import get_communes
+
 api_v1_patterns = [
     # path('accounts/', include('apps.accounts.urls')), no need for auth for now
     path('', include('apps.property.urls')),
@@ -20,6 +23,7 @@ api_v1_patterns = [
 
 urlpatterns = [
     # Admin
+    path('admin/get_communes/<int:wilaya_id>/', get_communes, name='get_communes'),
     path(settings.ADMIN_URL if hasattr(settings, 'ADMIN_URL') else 'admin/', admin.site.urls),
 
     # Public frontend pages (served from Frontend folder)
@@ -32,6 +36,7 @@ urlpatterns = [
     path('contact/', TemplateView.as_view(template_name='contact.html'), name='contact'),
     path('faq/', TemplateView.as_view(template_name='faq.html'), name='faq'),
     path('shop-grid/', TemplateView.as_view(template_name='shop-grid.html'), name='shop_grid'),
+    path('properties/<str:reference>/', views.property_detail, name='property_detail'),
     path('product-details/', TemplateView.as_view(template_name='product-details.html'), name='product_details'),
     path('register/', TemplateView.as_view(template_name='register.html'), name='register'),
     path('404/', TemplateView.as_view(template_name='404.html'), name='page_404'),
@@ -52,7 +57,7 @@ if settings.DEBUG:
             'style.css',
             serve,
             {
-                'document_root': settings.BASE_DIR.parent / 'Frontend',
+                'document_root': settings.BASE_DIR / 'Frontend',
                 'path': 'style.css',
             },
             name='frontend-style',
@@ -60,7 +65,7 @@ if settings.DEBUG:
     ]
     urlpatterns += static(
         '/assets/',
-        document_root=settings.BASE_DIR.parent / 'Frontend' / 'assets',
+        document_root=settings.BASE_DIR / 'Frontend' / 'assets',
     )
 
     # Media files

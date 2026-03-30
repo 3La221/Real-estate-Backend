@@ -15,6 +15,7 @@ colorama==0.4.6
 cron_descriptor==2.0.6
 cryptography==46.0.4
 Django==5.2.10
+django-admin-sortable2==2.3.1
 django-allauth==65.14.0
 django-celery-beat==2.8.1
 django-cloudinary-storage==0.3.0
@@ -41,6 +42,7 @@ pycparser==3.0
 PyJWT==2.10.1
 python-crontab==3.3.0
 python-dateutil==2.9.0.post0
+python-dotenv==1.2.1
 PyYAML==6.0.3
 redis==7.1.0
 referencing==0.37.0

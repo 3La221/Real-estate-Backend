@@ -1,0 +1,59 @@
+{% block extrahead %}
+{{ block.super }}
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+
+    // Poll until Select2 has initialized on both fields
+    const interval = setInterval(function () {
+        const $wilaya = $('#id_wilaya');
+        const $commune = $('#id_commune');
+
+        if (
+            $wilaya.hasClass('select2-hidden-accessible') &&
+            $commune.hasClass('select2-hidden-accessible')
+        ) {
+            clearInterval(interval);
+            console.log("✅ Both Select2 fields ready");
+
+            // Disable commune if no wilaya selected
+            if (!$wilaya.val()) {
+                $commune.prop('disabled', true).trigger('change.select2');
+            }
+
+            // ✅ This is the correct event for Select2 AJAX autocomplete
+            $wilaya.on('select2:select', function (e) {
+                const wilayaId = e.params.data.id;
+                console.log("Wilaya selected:", wilayaId);
+
+                fetch(`/admin/get_communes/${wilayaId}/`)
+                    .then(r => r.json())
+                    .then(communes => {
+                        // Clear existing options except placeholder
+                        $commune.find('option:not([value=""])').remove();
+
+                        // Add new options
+                        communes.forEach(function (c) {
+                            $commune.append(new Option(c.name, c.id, false, false));
+                        });
+
+                        // Enable and refresh Select2
+                        $commune
+                            .prop('disabled', false)
+                            .trigger('change.select2');
+                    })
+                    .catch(err => console.error("Failed to load communes:", err));
+            });
+
+            // Clear commune when wilaya is cleared
+            $wilaya.on('select2:clear', function () {
+                $commune
+                    .find('option:not([value=""])').remove().end()
+                    .prop('disabled', true)
+                    .trigger('change.select2');
+            });
+        }
+    }, 100);
+
+});
+</script>
+{% endblock %}

@@ -281,7 +281,7 @@ class PropertyMedia(models.Model):
         related_name="media",
         on_delete=models.CASCADE
     )
-    order = models.PositiveSmallIntegerField(default=0)
+    order = models.PositiveSmallIntegerField(default=0,db_index=True)
     image = CloudinaryField(
         'property_image',
         folder='properties',
@@ -293,7 +293,7 @@ class PropertyMedia(models.Model):
     is_cover = models.BooleanField(default=False)
 
     class Meta:
-        ordering = ['order', 'id']
+        ordering = ['order']
 
     def __str__(self):
         return f"Media for {self.property.title}"

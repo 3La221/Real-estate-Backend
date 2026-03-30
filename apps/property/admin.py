@@ -1,6 +1,7 @@
 from django.contrib import admin
 from django.utils.html import format_html
 from django.urls import reverse
+from adminsortable2.admin import SortableAdminMixin, SortableInlineAdminMixin,SortableAdminBase
 from .models import (
     Agency, AgencyContact, PropertyType, Property, PropertyMedia,
     Amenity, PropertyAmenity, Wilaya, Commune
@@ -64,7 +65,7 @@ class CommuneAdmin(admin.ModelAdmin):
 class AgencyContactInline(admin.TabularInline):
     model = AgencyContact
     extra = 1
-    readonly_fields = ("is_primary",)
+    # readonly_fields = ("is_primary",)
     fields = ("type", "number", "label", "is_primary")
 
 
@@ -152,9 +153,19 @@ class PropertyTypeAdmin(admin.ModelAdmin):
 class PropertyMediaInline(admin.TabularInline):
     model = PropertyMedia
     extra = 1
-    readonly_fields = ("is_cover",)
-    fields = ("image", "order", "is_cover")
+    fields = ("image_preview", "image", "order", "is_cover")
+    readonly_fields = ("image_preview",)
 
+
+    def image_preview(self, obj):
+        if obj.image:
+            return format_html(
+                '<img src="{}" style="height: 80px; width: auto; border-radius:5px;" />',
+                obj.image.url
+            )
+        return "-"
+    
+    image_preview.short_description = "Preview"
 
 class PropertyAmenityInline(admin.TabularInline):
     model = PropertyAmenity
@@ -288,6 +299,8 @@ class PropertyAdmin(admin.ModelAdmin):
     def feature_properties(self, request, queryset):
         updated = queryset.update(is_featured=True)
         self.message_user(request, f"{updated} properties marked as featured.")
+
+    # change_form_template = "admin/property_change_form.html"
 
 
 

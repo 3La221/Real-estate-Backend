@@ -2,16 +2,20 @@
 Base settings for Django project.
 This file contains settings common to all environments.
 """
+from dotenv import load_dotenv
 import os
+
 from pathlib import Path
 from datetime import timedelta
 
+load_dotenv()
 
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
 SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-change-this-in-production')
 
 DJANGO_APPS = [
+    "adminsortable2",
     'jazzmin',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -39,7 +43,8 @@ THIRD_PARTY_APPS = [
     'allauth.account',
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google',
-    'allauth.socialaccount.providers.facebook'
+    'allauth.socialaccount.providers.facebook',
+
 ]
 
 LOCAL_APPS = [
@@ -136,6 +141,7 @@ STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 STATICFILES_DIRS = [
     BASE_DIR / 'static',  
+    BASE_DIR / "Frontend", 
 ]
 # Media files
 MEDIA_URL = '/media/'
