@@ -12,6 +12,7 @@ from drf_spectacular.views import (
     SpectacularRedocView,
     SpectacularSwaggerView,
 )
+from apps.property.views import PropertyListView
 
 api_v1_patterns = [
     # path('accounts/', include('apps.accounts.urls')), no need for auth for now
@@ -35,6 +36,8 @@ urlpatterns = [
     path('product-details/', TemplateView.as_view(template_name='product-details.html'), name='product_details'),
     path('register/', TemplateView.as_view(template_name='register.html'), name='register'),
     path('404/', TemplateView.as_view(template_name='404.html'), name='page_404'),
+
+     path('properties/', PropertyListView.as_view(), name='property-list'),
 
     # API v1
     path('api/v1/', include(api_v1_patterns)),
