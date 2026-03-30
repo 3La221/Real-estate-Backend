@@ -154,7 +154,7 @@ class PropertyType(models.Model):
                 slug = f"{base}-{i}"
                 i += 1
             self.slug = slug 
-            super().save(*args, **kwargs)
+        super().save(*args, **kwargs)
 
 class Property(models.Model):
     SALE = "sale"
