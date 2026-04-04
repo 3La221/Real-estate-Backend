@@ -6,6 +6,9 @@ from rest_framework import viewsets, filters
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from django_filters.rest_framework import DjangoFilterBackend
+from django.views.generic import ListView
+from django.db.models import F, Q, Count, OuterRef, Prefetch, Subquery
+from .models import Amenity, Property, PropertyMedia, Wilaya
 
 from .models import Commune, Property
 from .serializers import (
@@ -72,10 +75,6 @@ class PropertyViewSet(TenantFilterMixin, viewsets.ReadOnlyModelViewSet):
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
 
-
-from django.views.generic import ListView
-from django.db.models import Q
-from .models import Property
 
 
 class PropertyListView(ListView):
@@ -227,4 +226,52 @@ def property_detail(request, reference):
         'gallery': gallery,
         'amenities': property.propertyamenity_set.select_related('amenity').all(),
         'primary_contacts': property.agency.contacts.filter(is_primary=True),
+    })
+
+def home(request):
+    amenities = (
+        Amenity.objects
+        .filter(icon__isnull=False)
+        .exclude(icon='')
+        .annotate(total=Count('propertyamenity'))
+        .order_by('-total')[:10]
+    )
+
+    cover_image_subquery = PropertyMedia.objects.filter(
+        property=OuterRef('pk'),
+        is_cover=True
+    ).values('image')[:1]
+
+    featured_properties = (
+        Property.objects
+        .filter(is_featured=True, is_published=True)
+        .annotate(image=Subquery(cover_image_subquery))
+        .order_by('-created_at')[:4]
+    )
+
+    # Subquery: one cover image per wilaya (via its first published property)
+    wilaya_cover_subquery = PropertyMedia.objects.filter(
+        property__wilaya=OuterRef('pk'),
+        property__is_published=True,
+        is_cover=True
+    ).values('image')[:1]
+
+    locations_with_properties = (
+        Wilaya.objects
+        .annotate(
+            property_count=Count(
+                'properties',
+                filter=Q(properties__is_published=True)
+            ),
+            image=Subquery(wilaya_cover_subquery)
+        )
+        .filter(property_count__gt=0)
+        .order_by('-property_count')[:8]
+    )
+    for location in locations_with_properties:
+        print(location.image.url)
+    return render(request, 'index5.html', {
+        'amenities': amenities,
+        'featured': featured_properties,
+        'locations': locations_with_properties,
     })

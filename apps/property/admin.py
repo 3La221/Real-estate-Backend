@@ -62,66 +62,148 @@ class CommuneAdmin(admin.ModelAdmin):
 # -------------------------
 # 2️⃣ Agency & Contacts Admin
 # -------------------------
+from django.contrib import admin
+from django.utils.html import format_html
+from django.db import models
+from .models import Agency, AgencyContact
+
 class AgencyContactInline(admin.TabularInline):
     model = AgencyContact
     extra = 1
-    # readonly_fields = ("is_primary",)
     fields = ("type", "number", "label", "is_primary")
+    ordering = ("-is_primary", "id")
 
 
 @admin.register(Agency)
 class AgencyAdmin(admin.ModelAdmin):
-    list_display = ("name", "tenant", "owner", "wilaya", "commune", "email", "staff_count", "is_active", "created_at")
+    list_display = (
+        "name",
+        "tenant",
+        "owner",
+        "wilaya",
+        "commune",
+        "email",
+        "staff_count",
+        "is_active",
+        "created_at",
+        "primary_color_display",
+    )
     list_filter = ("is_active", "wilaya")
-    search_fields = ("name", "owner__username", "email", "tenant__name")
-    readonly_fields = ("created_at", "tenant", "staff_count")
+    search_fields = ("name", "owner__username", "email", "tagline")
+    readonly_fields = (
+        "created_at",
+        "staff_count",
+        "slug",
+        "logo_preview",
+        "cover_preview",
+        "hero_preview",
+        "about_us_preview",
+        "google_maps_preview",
+    )
     inlines = [AgencyContactInline]
     autocomplete_fields = ("wilaya", "commune")
+
     fieldsets = (
         ("Tenant (One Agency Per Tenant)", {
             "fields": ("tenant",),
             "description": "Each tenant has exactly one agency. Tenant cannot be changed after creation."
         }),
         ("Owner", {"fields": ("owner",)}),
-        ("Basic Info", {"fields": ("name", "slug", "description", "email")}),
-        ("Location", {"fields": ("wilaya", "commune", "address")}),
-        ("Media & Social", {"fields": ("logo", "cover_image", "facebook", "instagram", "tiktok")}),
+        ("Basic Info", {"fields": ("name", "slug", "description", "email", "tagline")}),
+        ("Location", {"fields": ("wilaya", "commune", "address", "google_maps_url", "google_maps_preview")}),
+        ("Branding & Media", {
+            "fields": (
+                "logo", "logo_preview",
+                "cover_image", "cover_preview",
+                "hero_title", "hero_subtitle",
+                "hero_image", "hero_preview",
+                "about_us_title",
+                "about_us_image","about_us_preview",
+                "primary_color", "secondary_color","accent_color","navbar_background_color",
+            )
+        }),
+        ("Footer", {"fields": ("footer_description",)}),
+        ("Social Media", {"fields": ("facebook", "instagram", "tiktok")}),
         ("Status & Meta", {"fields": ("is_active", "staff_count", "created_at")}),
     )
-    
+
+    # Previews for media fields
+    def logo_preview(self, obj):
+        if obj.logo:
+            return format_html('<img src="{}" style="max-width:100px; max-height:100px;" />', obj.logo.url)
+        return "-"
+    logo_preview.short_description = "Logo Preview"
+
+    def about_us_preview(self, obj):
+        if obj.logo:
+            return format_html('<img src="{}" style="max-width:100px; max-height:100px;" />', obj.about_us_image.url)
+        return "-"
+    logo_preview.short_description = "Logo Preview"
+
+    def cover_preview(self, obj):
+        if obj.cover_image:
+            return format_html('<img src="{}" style="max-width:150px; max-height:80px;" />', obj.cover_image.url)
+        return "-"
+    cover_preview.short_description = "Cover Preview"
+
+    def hero_preview(self, obj):
+        if obj.hero_image:
+            return format_html('<img src="{}" style="max-width:200px; max-height:120px;" />', obj.hero_image.url)
+        return "-"
+    hero_preview.short_description = "Hero Image Preview"
+
+    # Google Maps preview link
+    def google_maps_preview(self, obj):
+        if obj.google_maps_url:
+            return format_html('<iframe src="{}" width="400" height="300" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>', obj.google_maps_url)
+        return "-"
+    google_maps_preview.short_description = "Map Preview"
+
+    # Color preview
+    def primary_color_display(self, obj):
+        if obj.primary_color:
+            return format_html(
+                '<div style="width:20px; height:20px; border:1px solid #000; background-color:{};"></div>',
+                obj.primary_color
+            )
+        return "-"
+    primary_color_display.short_description = "Primary Color"
+
+    # Staff count helper
     def staff_count(self, obj):
-        """Display number of staff users assigned to this agency"""
         count = obj.staff_users.count()
         if count > 0:
             url = f"/admin/accounts/user/?agency__id__exact={obj.id}"
             return format_html('<a href="{}">{} staff</a>', url, count)
         return "0 staff"
     staff_count.short_description = "Staff Users"
-    
+
+    # Restrict add permissions for existing tenants
     def has_add_permission(self, request):
-        """Only allow adding agency if tenant doesn't already have one"""
-        # Superusers can always add
         if request.user.is_superuser:
             return True
         return False
-    
+
+    # Filter queryset for agency staff
     def get_queryset(self, request):
-        """Superadmins see all agencies, agency staff only see their own"""
         qs = super().get_queryset(request)
         if request.user.is_superuser:
             return qs
-        # Agency staff can only see their agency
-        if hasattr(request.user, 'agency') and request.user.agency:
+        if hasattr(request.user, "agency") and request.user.agency:
             return qs.filter(id=request.user.agency.id)
         return qs.none()
-    
+
+    # Make tenant readonly after creation
     def get_readonly_fields(self, request, obj=None):
-        """Make tenant read-only after creation (can't reassign)"""
-        if obj:  # Editing existing object
-            return self.readonly_fields + ('tenant',)
-        return ('created_at', 'staff_count')
+        if obj:  # editing existing agency
+            return self.readonly_fields + ("tenant",)
+        return self.readonly_fields
 
-
+    # Optional: make color picker for primary & secondary colors
+    def formfield_for_dbfield(self, db_field, **kwargs):
+        if db_field.name in ("primary_color", "secondary_color","accent_color","navbar_background_color",):
+            kwargs["widget"] = kwargs.get("widget", admin.widgets.AdminTextInputWidget(attrs={"type": "color"}))
+        return super().formfield_for_dbfield(db_field, **kwargs)
 # -------------------------
 # 3️⃣ Property Type Admin
 # -------------------------
