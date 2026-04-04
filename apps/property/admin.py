@@ -20,7 +20,10 @@ class PropertyAdminForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        if self.instance and self.instance.pk and self.instance.wilaya_id:
+        posted_wilaya = self.data.get('wilaya') if hasattr(self, 'data') else None
+        if posted_wilaya:
+            self.fields['commune'].queryset = Commune.objects.filter(wilaya_id=posted_wilaya)
+        elif self.instance and self.instance.pk and self.instance.wilaya_id:
             self.fields['commune'].queryset = Commune.objects.filter(wilaya=self.instance.wilaya)
         else:
             self.fields['commune'].queryset = Commune.objects.none()
@@ -33,7 +36,10 @@ class AgencyAdminForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        if self.instance and self.instance.pk and self.instance.wilaya_id:
+        posted_wilaya = self.data.get('wilaya') if hasattr(self, 'data') else None
+        if posted_wilaya:
+            self.fields['commune'].queryset = Commune.objects.filter(wilaya_id=posted_wilaya)
+        elif self.instance and self.instance.pk and self.instance.wilaya_id:
             self.fields['commune'].queryset = Commune.objects.filter(wilaya=self.instance.wilaya)
         else:
             self.fields['commune'].queryset = Commune.objects.none()
