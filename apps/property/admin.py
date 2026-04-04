@@ -1,3 +1,4 @@
+from django import forms
 from django.contrib import admin
 from django.utils.html import format_html
 from django.urls import reverse
@@ -10,6 +11,38 @@ from django.contrib.admin import AdminSite
 from django.urls import path
 from django.shortcuts import render
 from .models import Property, Agency
+
+
+class PropertyAdminForm(forms.ModelForm):
+    class Meta:
+        model = Property
+        fields = '__all__'
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        posted_wilaya = self.data.get('wilaya') if hasattr(self, 'data') else None
+        if posted_wilaya:
+            self.fields['commune'].queryset = Commune.objects.filter(wilaya_id=posted_wilaya)
+        elif self.instance and self.instance.pk and self.instance.wilaya_id:
+            self.fields['commune'].queryset = Commune.objects.filter(wilaya=self.instance.wilaya)
+        else:
+            self.fields['commune'].queryset = Commune.objects.none()
+
+
+class AgencyAdminForm(forms.ModelForm):
+    class Meta:
+        model = Agency
+        fields = '__all__'
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        posted_wilaya = self.data.get('wilaya') if hasattr(self, 'data') else None
+        if posted_wilaya:
+            self.fields['commune'].queryset = Commune.objects.filter(wilaya_id=posted_wilaya)
+        elif self.instance and self.instance.pk and self.instance.wilaya_id:
+            self.fields['commune'].queryset = Commune.objects.filter(wilaya=self.instance.wilaya)
+        else:
+            self.fields['commune'].queryset = Commune.objects.none()
 
 
 
@@ -76,6 +109,8 @@ class AgencyContactInline(admin.TabularInline):
 
 @admin.register(Agency)
 class AgencyAdmin(admin.ModelAdmin):
+    form = AgencyAdminForm
+    change_form_template = "admin/property_change_form.html"
     list_display = (
         "name",
         "tenant",
@@ -101,7 +136,7 @@ class AgencyAdmin(admin.ModelAdmin):
         "google_maps_preview",
     )
     inlines = [AgencyContactInline]
-    autocomplete_fields = ("wilaya", "commune")
+    autocomplete_fields = ("wilaya",)
 
     fieldsets = (
         ("Tenant (One Agency Per Tenant)", {
@@ -270,7 +305,8 @@ class PropertyAdmin(admin.ModelAdmin):
         "is_featured", "is_published", "agency__tenant"
     )
     search_fields = ("title", "reference", "agency__name", "address")
-    autocomplete_fields = ("agency", "property_type", "wilaya", "commune")
+    form = PropertyAdminForm
+    autocomplete_fields = ("agency", "property_type", "wilaya")
     readonly_fields = (
         "reference", "views_count", "leads_count",
         "created_at", "updated_at"
@@ -382,7 +418,7 @@ class PropertyAdmin(admin.ModelAdmin):
         updated = queryset.update(is_featured=True)
         self.message_user(request, f"{updated} properties marked as featured.")
 
-    # change_form_template = "admin/property_change_form.html"
+    change_form_template = "admin/property_change_form.html"
 
 
 
