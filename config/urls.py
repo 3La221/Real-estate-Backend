@@ -16,6 +16,14 @@ from apps.property.views import PropertyListView
 
 from apps.property import views
 from apps.property.views import get_communes
+from django.http import JsonResponse
+
+def health_check(request):
+    """Health check endpoint for Docker and load balancers."""
+    return JsonResponse({
+        'status': 'healthy',
+        'service': 'realestate-api'
+    })
 
 api_v1_patterns = [
     # path('accounts/', include('apps.accounts.urls')), no need for auth for now
@@ -23,6 +31,9 @@ api_v1_patterns = [
 ]
 
 urlpatterns = [
+    # Health check
+    path('api/health/', health_check, name='health_check'),
+    
     # Admin
     path('admin/get_communes/<int:wilaya_id>/', get_communes, name='get_communes'),
     path(settings.ADMIN_URL if hasattr(settings, 'ADMIN_URL') else 'admin/', admin.site.urls),

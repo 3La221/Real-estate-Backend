@@ -4,19 +4,21 @@ Production settings.
 from .base import *
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.environ.get('DEBUG', 'False') == 'True'
 
-ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', '').split(',')
+allowed_hosts_env = os.environ.get('ALLOWED_HOSTS', '')
+ALLOWED_HOSTS = [host.strip() for host in allowed_hosts_env.split(',') if host.strip()] if allowed_hosts_env else ['localhost', '127.0.0.1']
 
 # Security settings
-SECURE_SSL_REDIRECT = True
-SESSION_COOKIE_SECURE = True
-CSRF_COOKIE_SECURE = True
+    # Allow disabling SSL for local Docker testing
+SECURE_SSL_REDIRECT = os.environ.get('DISABLE_SSL', 'False') != 'True'
+SESSION_COOKIE_SECURE = os.environ.get('DISABLE_SSL', 'False') != 'True'
+CSRF_COOKIE_SECURE = os.environ.get('DISABLE_SSL', 'False') != 'True'
 SECURE_BROWSER_XSS_FILTER = True
 SECURE_CONTENT_TYPE_NOSNIFF = True
-SECURE_HSTS_SECONDS = 31536000  # 1 year
-SECURE_HSTS_INCLUDE_SUBDOMAINS = True
-SECURE_HSTS_PRELOAD = True
+SECURE_HSTS_SECONDS = 31536000 if os.environ.get('DISABLE_SSL', 'False') != 'True' else 0
+SECURE_HSTS_INCLUDE_SUBDOMAINS = os.environ.get('DISABLE_SSL', 'False') != 'True'
+SECURE_HSTS_PRELOAD = os.environ.get('DISABLE_SSL', 'False') != 'True'
 X_FRAME_OPTIONS = 'DENY'
 
 # ========================================
