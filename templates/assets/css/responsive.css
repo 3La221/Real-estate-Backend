@@ -70,7 +70,7 @@
 		transition: all .4s ease-in-out;
 	}
 	.canvas_open:hover{
-		background: #5f3afc;
+		background: var(--accent-color);
 	}
 	.canvas_open:hover a span{
 		background: #fff;
@@ -227,7 +227,7 @@
 		font-size: 15px;
 		font-weight: 500;
 		padding: 11px 4px;
-		border: 1px solid #5f3afc !important;
+		border: 1px solid var(--accent-color) !important;
 	}
 	.properties_Slider .owl-next {
 		right: 10px;
@@ -350,7 +350,7 @@
 		font-size: 24px;
 	}
 	.sc_subtitle span {
-		border-left: 6px solid #5f3afc;
+		border-left: 6px solid var(--accent-color);
 		padding: 10px 5px;
 		font-size: 16px;
 	}

@@ -1,4 +1,85 @@
 {% load static %}
+<style>
+    :root {
+        --primary-color: {{ current_agency.primary_color }};
+        --secondary-color: {{ current_agency.secondary_color }};
+        --accent-color: {{ current_agency.accent_color }};
+        --navbar-bg: {{current_agency.navbar_background_color}};
+
+    }
+    .navbar-logo {
+    max-height: 60px;   /* adjust based on your header */
+    width: auto;
+    object-fit: contain;
+}
+</style>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        function hexToRgb(hex) {
+            // Convert hex color to RGB values
+            const r = parseInt(hex.slice(1, 3), 16);
+            const g = parseInt(hex.slice(3, 5), 16);
+            const b = parseInt(hex.slice(5, 7), 16);
+            return { r, g, b };
+        }
+
+        function rgbToHex(r, g, b) {
+            // Convert RGB values back to hex
+            return `#${(1 << 24 | r << 16 | g << 8 | b).toString(16).slice(1).toUpperCase()}`;
+        }
+
+        function adjustColor(baseColorHex, rFactor, gFactor, bFactor) {
+            // Get RGB values from base color
+            const baseColor = hexToRgb(baseColorHex);
+
+            // Apply the factors to adjust the RGB values
+            const r = Math.floor(baseColor.r * rFactor);
+            const g = Math.floor(baseColor.g * gFactor);
+            const b = Math.floor(baseColor.b * bFactor);
+
+            // Ensure the values are in the valid range (0-255)
+            return rgbToHex(Math.max(0, Math.min(255, r)), Math.max(0, Math.min(255, g)), Math.max(0, Math.min(255, b)));
+        }
+
+        function setAccentColorRgb(r, g, b) {
+            const accentColorHex = getComputedStyle(document.documentElement).getPropertyValue('--accent-color').trim();
+
+            // Check if accentColorHex is valid (non-empty string and valid hex)
+            if (accentColorHex && /^#[0-9A-F]{6}$/i.test(accentColorHex)) {
+                // Convert the hex color to RGB
+                const { r, g, b } = hexToRgb(accentColorHex);
+                
+                // Set the --accent-color-rgb custom property in CSS
+                document.documentElement.style.setProperty('--accent-color-rgb', `${r}, ${g}, ${b}`);
+            } else {
+                // If the accent color is invalid or missing, we keep the default RGB value (fallback)
+                console.warn('Accent color failed to load, using default RGB value.');
+            }
+        }
+
+        function setFooterVariants() {
+            // Get the base color from the CSS custom property '--navbar-bg'
+            const navbarBg = getComputedStyle(document.documentElement).getPropertyValue('--navbar-bg').trim();
+
+            // Define the change factors based on our previous calculations
+            const factors = [
+                { rFactor: 0.45, gFactor: 0.74, bFactor: 0.78 },  // Variant 1
+                { rFactor: 0.55, gFactor: 0.79, bFactor: 0.82 },  // Variant 2
+                { rFactor: 0.82, gFactor: 0.88, bFactor: 0.88 }   // Variant 3
+            ];
+
+            // For each variant, adjust the base color and set it as a CSS custom property
+            factors.forEach((factor, index) => {
+                const variantColor = adjustColor(navbarBg, factor.rFactor, factor.gFactor, factor.bFactor);
+                document.documentElement.style.setProperty(`--footer-variant${index + 1}`, variantColor);
+            });
+        }
+
+        // Call the function to set the variants
+        setFooterVariants();
+        setAccentColorRgb();
+    });
+</script>
 <!-- Start Header Area -->
 <header class="header">
     <!-- Header Top -->
@@ -8,8 +89,22 @@
                 <!-- Top Left -->
                 <div class="col-lg-6">
                     <div class="hl_top-left">
-                        <span><i class="bi bi-envelope"></i> info12@example.com</span>
-                        <span><i class="bi bi-geo-alt"></i> California, TX 70240</span>
+
+                        {% if current_agency %}
+                            <span>
+                                <i class="bi bi-envelope"></i>
+                                {{ current_agency.email }}
+                            </span>
+
+                            <span>
+                                <i class="bi bi-geo-alt"></i>
+                                {{ current_agency.wilaya }} - {{ current_agency.commune }}
+                                {% if current_agency.address %}
+                                    , {{ current_agency.address }}
+                                {% endif %}
+                            </span>
+                        {% endif %}
+
                     </div>
                 </div>
                 <!-- Top Right -->
@@ -20,18 +115,36 @@
                         <ul>
                             <li><a href="#">Arabic</a></li>
                             <li><a href="#">French</a></li>
-                            <li><a href="#">Hindi</a></li>
                             <li><a href="#">English</a></li>
-                            <li><a href="#">Chinese</a></li>
-                            <li><a href="#">Bengali</a></li>
                         </ul>
                     </div>
                     <!-- Social -->
                     <div class="top-social">
-                        <span><a href="#" title="Facebook"><i class="fab fa-facebook-f"></i></a></span>
-                        <span><a href="#" title="Twitter"><i class="fab fa-twitter"></i></a></span>
-                        <span><a href="#" title="Instagram"><i class="fab fa-instagram"></i></a></span>
-                        <span><a href="#" title="Vimeo"><i class="fab fa-vimeo-v"></i></a></span>
+
+                        {% if current_agency.facebook %}
+                            <span>
+                                <a href="{{ current_agency.facebook }}" target="_blank">
+                                    <i class="fab fa-facebook-f"></i>
+                                </a>
+                            </span>
+                        {% endif %}
+
+                        {% if current_agency.instagram %}
+                            <span>
+                                <a href="{{ current_agency.instagram }}" target="_blank">
+                                    <i class="fab fa-instagram"></i>
+                                </a>
+                            </span>
+                        {% endif %}
+
+                        {% if current_agency.tiktok %}
+                            <span>
+                                <a href="{{ current_agency.tiktok }}" target="_blank">
+                                    <i class="fab fa-tiktok"></i>
+                                </a>
+                            </span>
+                        {% endif %}
+
                     </div>
                 </div>
             </div>
@@ -44,7 +157,11 @@
                 <div class="col-lg-2 col-md-4 align-self-center">
                     <div class="logo">
                         <a href="{% url 'home' %}">
-                            <img src="{% static 'assets/img/logo.png' %}" alt="logo">
+                            {% if current_agency and current_agency.logo %}
+                                <img src="{{ current_agency.logo.url }}" alt="logo" class="navbar-logo">
+                            {% else %}
+                                <img src="{% static 'assets/img/logo.png' %}" alt="logo">
+                            {% endif %}
                         </a>
                     </div>
                 </div>
@@ -59,13 +176,6 @@
                                     <span></span>
                                 </a>
                             </div>
-                        </div>
-                        <!-- Cart Icon -->
-                        <div class="mini-cart-icon" title="Cart">
-                            <a href="cart.html">
-                                <i class="bi bi-cart3"></i>
-                                <span>2</span>
-                            </a>
                         </div>
                         <!-- Header Search -->
                         <div class="header-search">
@@ -82,36 +192,18 @@
                                 </div>
                             </div>
                         </div>
-                        <!-- Cart Icon -->
-                        <div class="header-user-icon">
-                            <a href="login.html" title="Login / Register">
-                                <i class="bi bi-person"></i>
-                            </a>
-                        </div>
                     </div>
                     <!-- Menu -->
                     <div class="menu">
                         <nav>
                             <ul>
-                                <li class="menu-item-has-children">
+                                <li>
                                     <a href="{% url 'home' %}">Home</a>
-                                    <ul>
-                                        <li><a href="{% url 'home' %}">Home Style 01</a></li>
-                                        <li><a href="{% url 'index2' %}">Home Style 02</a></li>
-                                        <li><a href="{% url 'index3' %}">Home Style 03</a></li>
-                                        <li><a href="{% url 'index4' %}">Home Style 04</a></li>
-                                        <li><a href="{% url 'index5' %}">Home Style 05</a></li>
-                                    </ul>
                                 </li>
-                                <li><a href="{% url 'about' %}">About Us</a></li>
+                                <li><a href="#about">About Us</a></li>
                             
-                                <li class="menu-item-has-children">
-                                    <a href="#">Shop</a>
-                                    <ul>
-                                        <li><a href="{% url 'shop_grid' %}">Shop</a></li>
-                                        <li><a href="{% url 'shop_grid' %}">Shop Grid</a></li>
-                                        <li><a href="{% url 'product_details' %}">Single Products</a></li>
-                                    </ul>
+                                <li>
+                                    <a href="{% url 'property-list' %}">Shop</a>
                                 </li>
                               
                                 <li><a href="{% url 'contact' %}">Contact Us</a></li>
@@ -143,85 +235,16 @@
             </div>
             <div id="menu" class="text-left ">
                 <ul class="offcanvas_main_menu">
-                    <li class="menu-item-has-children active">
-                        <a href="#">Home</a>
-                        <ul class="sub-menu">
-                            <li><a href="{% url 'home' %}">Home Style 01</a></li>
-                            <li><a href="{% url 'index2' %}">Home Style 02</a></li>
-                            <li><a href="{% url 'index3' %}">Home Style 03</a></li>
-                            <li><a href="{% url 'index4' %}">Home Style 04</a></li>
-                            <li><a href="{% url 'index5' %}">Home Style 05</a></li>
-                        </ul>
-                    </li>
+                        <a href="{% url 'home'%}">Home</a>
                     <li class="menu-item-has-children">
-                        <a href="{% url 'about' %}"> About Us</a> 
+                        <a href="#about"> About Us</a> 
                     </li>
-                    <li class="menu-item-has-children">
-                        <a href="#">Page</a>
-                        <ul class="sub-menu">
-                            <li class="menu-item-has-children">
-                                <a href="#">Team</a>
-                                <ul class="sub-menu">
-                                    <li><a href="team.html">Team Styel 1</a></li>
-                                    <li><a href="team-2.html">Team Styel 2</a></li>
-                                </ul>
-                            </li>
-                            <li><a href="pricing.html">Pricing Plane</a></li>
-                            <li class="menu-item-has-children">
-                                <a href="#">Services</a>
-                                <ul class="sub-menu">
-                                    <li><a href="services.html">Services</a></li>
-                                    <li><a href="services-details.html">Services Details</a></li>
-                                </ul>
-                            </li>
-                            <li class="menu-item-has-children">
-                                <a href="#">Portfolio</a>
-                                <ul class="sub-menu">
-                                    <li><a href="porfolio.html">Portfolio</a></li>
-                                    <li><a href="porfolio-details.html">Portfolio Details</a></li>
-                                </ul>
-                            </li>
-                            <li class="menu-item-has-children">
-                                <a href="#">Shop</a>
-                                <ul class="sub-menu">
-                                    <li><a href="cart.html">Cart</a></li>
-                                    <li><a href="checkout.html">Checkout</a></li>
-                                    <li><a href="wishlist.html">Wishlist</a></li>
-                                </ul>
-                            </li>
-                            <li class="menu-item-has-children">
-                                <a href="#">User</a>
-                                <ul class="sub-menu">
-                                    <li><a href="login.html">Login</a></li>
-                                    <li><a href="{% url 'register' %}">Register</a></li>
-                                    <li><a href="forget-password.html">Forget Password</a></li>
-                                    <li><a href="account.html">My Account</a></li>
-                                </ul>
-                            </li>
                             <li><a href="faq.html">Faq</a></li>
                             <li><a href="{% url 'page_404' %}">404 Error</a></li>
                         </ul>
                     </li>
                     <li class="menu-item-has-children">
-                        <a href="#">Shop</a>
-                        <ul class="sub-menu">
-                            <li><a href="shop.html">Shop</a></li>
-                            <li><a href="{% url 'shop_grid' %}">Shop Grid</a></li>
-                            <li><a href="shop-2-column.html">Shop 2 Columns</a></li>
-                            <li><a href="shop-left-sidebar.html">Shop Left Sidebar</a></li>
-                            <li><a href="shop-right-sidebar.html">Shop Right Sidebar</a></li>
-                            <li><a href="{% url 'product_details' %}">Single Products</a></li>
-                        </ul>
-                    </li>
-                    <li class="menu-item-has-children">
-                        <a href="#">Blog</a>
-                        <ul class="sub-menu">
-                            <li><a href="blog.html">Blog</a></li>
-                            <li><a href="blog-grid.html">Blog Grid</a></li>
-                            <li><a href="blog-left-sidebar.html">Blog Left Sidebar</a></li>
-                            <li><a href="blog-right-sidebar.html">Blog Right Sidebar</a></li>
-                            <li><a href="single.html">Blog Details</a></li>
-                        </ul>
+                        <a href="{% url 'property-list' %}">Shop</a>
                     </li>
                     <li class="menu-item-has-children">
                         <a href="contact.html"> Contact Us</a> 

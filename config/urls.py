@@ -39,11 +39,7 @@ urlpatterns = [
     path(settings.ADMIN_URL if hasattr(settings, 'ADMIN_URL') else 'admin/', admin.site.urls),
 
     # Public frontend pages (served from Frontend folder)
-    path('', TemplateView.as_view(template_name='index.html'), name='home'),
-    path('index2/', TemplateView.as_view(template_name='index2.html'), name='index2'),
-    path('index3/', TemplateView.as_view(template_name='index3.html'), name='index3'),
-    path('index4/', TemplateView.as_view(template_name='index4.html'), name='index4'),
-    path('index5/', TemplateView.as_view(template_name='index5.html'), name='index5'),
+    path('', views.home, name='home'),
     path('about/', TemplateView.as_view(template_name='about.html'), name='about'),
     path('contact/', TemplateView.as_view(template_name='contact.html'), name='contact'),
     path('faq/', TemplateView.as_view(template_name='faq.html'), name='faq'),
