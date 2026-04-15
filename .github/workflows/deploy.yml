@@ -37,7 +37,13 @@ jobs:
           username: ${{ secrets.VPS_USER }}
           key: ${{ secrets.VPS_SSH_KEY }}
           script: |
+            set -e
+
+            echo "${{ secrets.DOCKERHUB_TOKEN }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
+
             cd ${{ secrets.APP_DIR }}
+
             docker compose pull
             docker compose up -d
+
             docker image prune -f
