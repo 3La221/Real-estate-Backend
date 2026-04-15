@@ -27,8 +27,7 @@ jobs:
         with:
           context: .
           push: true
-          tags: |
-            brahimi3109/mibrat:realestate-api
+          tags: brahimi3109/mibrat:realestate-api
 
       # 4. Deploy
       - name: Deploy to VPS via SSH
