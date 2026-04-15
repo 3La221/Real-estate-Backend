@@ -1,7 +1,9 @@
 import json
 from django.core.management.base import BaseCommand
-from apps.property.models import Wilaya, Commune  # adjust import to your app name
+  # adjust import to your app name
 from pathlib import Path
+
+from apps.property.models import Commune, Wilaya
 
 class Command(BaseCommand):
     help = "Load Wilaya and Commune data from JSON files into the database"

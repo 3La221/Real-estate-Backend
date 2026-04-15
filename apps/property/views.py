@@ -10,7 +10,9 @@ from django.views.generic import ListView
 from django.db.models import F, Q, Count, OuterRef, Prefetch, Subquery
 from .models import Amenity, Property, PropertyMedia, Wilaya
 
-from .models import Commune, Property
+from config.pagination import StandardPagination
+
+from .models import Property
 from .serializers import (
     PropertyListSerializer,
     PropertyDetailSerializer,
@@ -29,6 +31,7 @@ class PropertyViewSet(TenantFilterMixin, viewsets.ReadOnlyModelViewSet):
     ).prefetch_related('media')
     permission_classes = []
     filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
+    pagination_class = StandardPagination
     
 
     filterset_fields = {
