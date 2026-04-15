@@ -1,0 +1,131 @@
+{% load static %}
+<style>
+    .footer-logo {
+    max-height: 70px;
+    width: auto;
+    object-fit: contain;
+}
+</style>
+<footer class="footer">
+
+    <!-- Footer Top -->
+    <div class="footer-top pt-70 pb-20">
+        <div class="container">
+            <div class="row">
+
+                <!-- Agency Info -->
+                <div class="col-lg-4 col-md-6 mb-30">
+                    <div class="f-widgets-single">
+
+                        <!-- Logo -->
+                        <div class="flogo mb-20">
+                            <a href="{% url 'home' %}">
+                                {% if current_agency and current_agency.logo %}
+                                    <img src="{{ current_agency.logo.url }}" class="footer-logo">
+                                {% else %}
+                                    <img src="{% static 'assets/img/white-logo.png' %}" class="footer-logo">
+                                {% endif %}
+                            </a>
+                        </div>
+
+                        <!-- Description -->
+                        {% if current_agency.footer_description %}
+                            <p>{{ current_agency.footer_description }}</p>
+                        {% endif %}
+
+                        <!-- Address -->
+                        {% if current_agency %}
+                            <p>
+                                {{ current_agency.wilaya }} - {{ current_agency.commune }}
+                                {% if current_agency.address %}
+                                    , {{ current_agency.address }}
+                                {% endif %}
+                            </p>
+                        {% endif %}
+
+                    </div>
+                </div>
+
+                <!-- Navigation -->
+                <div class="col-lg-4 col-md-6 mb-30">
+                    <div class="f-widgets-single">
+                        <h2>Pages</h2>
+                        <ul>
+                            <li><a href="{% url 'home' %}">Home</a></li>
+                            <li><a href="{% url 'shop_grid' %}">Shop</a></li>
+                            <li><a href="{% url 'about' %}">About Us</a></li>
+                            <li><a href="{% url 'contact' %}">Contact Us</a></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Contact + Social -->
+                <div class="col-lg-4 col-md-6 mb-30">
+                    <div class="f-widgets-single">
+                        <h2>Contact</h2>
+
+                        <!-- Email -->
+                        {% if current_agency.email %}
+                            <p>Email: {{ current_agency.email }}</p>
+                        {% endif %}
+
+                        <!-- Phones -->
+                        {% if current_agency %}
+                            {% for contact in current_agency.contacts.all %}
+                                {% if contact.is_primary %}
+                                    <p>{{ contact.get_type_display }}: {{ contact.number }}</p>
+                                {% endif %}
+                            {% endfor %}
+                        {% endif %}
+
+                        <!-- Social -->
+                        <div class="f-social mt-3">
+
+                            {% if current_agency.facebook %}
+                                <span>
+                                    <a href="{{ current_agency.facebook }}" target="_blank">
+                                        <i class="fab fa-facebook-f"></i>
+                                    </a>
+                                </span>
+                            {% endif %}
+
+                            {% if current_agency.instagram %}
+                                <span>
+                                    <a href="{{ current_agency.instagram }}" target="_blank">
+                                        <i class="fab fa-instagram"></i>
+                                    </a>
+                                </span>
+                            {% endif %}
+
+                            {% if current_agency.tiktok %}
+                                <span>
+                                    <a href="{{ current_agency.tiktok }}" target="_blank">
+                                        <i class="fab fa-tiktok"></i>
+                                    </a>
+                                </span>
+                            {% endif %}
+
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer Bottom -->
+    <div class="footer-bottom text-center pt-30 pb-30">
+        <div class="f-widgets-single">
+            <p>
+                © {{ now|date:"Y" }}
+                {% if current_agency %}
+                    {{ current_agency.name }}
+                {% else %}
+                    Your Company
+                {% endif %}
+            </p>
+        </div>
+    </div>
+
+</footer>

@@ -5,6 +5,7 @@ from cloudinary.models import CloudinaryField
 
 from apps.accounts.models import User
 from apps.core.models import Tenant
+from apps.property.utils import validate_google_maps_embed_url
 
 # Create your models here.
 class Commune(models.Model):
@@ -69,6 +70,38 @@ class Agency(models.Model):
 
     is_active = models.BooleanField(default=True, db_index=True)
     created_at = models.DateTimeField(auto_now_add=True)
+
+    primary_color = models.CharField(max_length=7, default="#CBA135")
+    secondary_color = models.CharField(max_length=7, blank=True, null=True)
+    accent_color = models.CharField(
+        max_length=7, 
+        blank=True, 
+        null=True, 
+        help_text="Accent color for the agency's branding"
+    )
+    navbar_background_color = models.CharField(
+        max_length=7,
+        blank=True,
+        null=True,
+        default='#0B2B3C',
+    )
+    # Content
+    tagline = models.CharField(max_length=255, blank=True)#hero phrase
+    footer_description = models.TextField(blank=True)
+
+    # Hero section
+    hero_title = models.CharField(max_length=255, blank=True)
+    about_us_title = models.CharField(max_length=255,blank=True)
+    hero_subtitle = models.TextField(blank=True)
+    hero_image = CloudinaryField('hero',folder='agencies/hero', blank=True, null=True)
+    about_us_image = CloudinaryField('about_us',folder='agencies/about_us', blank=True, null=True)
+
+    # Map (SAFE version)
+    google_maps_url = models.URLField(blank=True,
+                                      max_length=2000,
+                                      validators=[validate_google_maps_embed_url],
+                                      help_text="Paste only the Google Maps embed URL (not iframe)")
+
 
     def __str__(self):
         return self.name
@@ -154,7 +187,7 @@ class PropertyType(models.Model):
                 slug = f"{base}-{i}"
                 i += 1
             self.slug = slug 
-            super().save(*args, **kwargs)
+        super().save(*args, **kwargs)
 
 class Property(models.Model):
     SALE = "sale"
@@ -281,7 +314,7 @@ class PropertyMedia(models.Model):
         related_name="media",
         on_delete=models.CASCADE
     )
-    order = models.PositiveSmallIntegerField(default=0)
+    order = models.PositiveSmallIntegerField(default=0,db_index=True)
     image = CloudinaryField(
         'property_image',
         folder='properties',
@@ -293,7 +326,7 @@ class PropertyMedia(models.Model):
     is_cover = models.BooleanField(default=False)
 
     class Meta:
-        ordering = ['order', 'id']
+        ordering = ['order']
 
     def __str__(self):
         return f"Media for {self.property.title}"
@@ -308,6 +341,7 @@ class PropertyMedia(models.Model):
         super().save(*args, **kwargs)
 
 class Amenity(models.Model):
+    icon = models.CharField(max_length=100,blank=True,null=True)
     name = models.CharField(max_length=100)
 
     def __str__(self):

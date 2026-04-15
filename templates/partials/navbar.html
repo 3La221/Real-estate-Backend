@@ -1,0 +1,257 @@
+{% load static %}
+<style>
+    :root {
+        --primary-color: {{ current_agency.primary_color }};
+        --secondary-color: {{ current_agency.secondary_color }};
+        --accent-color: {{ current_agency.accent_color }};
+        --navbar-bg: {{current_agency.navbar_background_color}};
+
+    }
+    .navbar-logo {
+    max-height: 60px;   /* adjust based on your header */
+    width: auto;
+    object-fit: contain;
+}
+</style>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        function hexToRgb(hex) {
+            // Convert hex color to RGB values
+            const r = parseInt(hex.slice(1, 3), 16);
+            const g = parseInt(hex.slice(3, 5), 16);
+            const b = parseInt(hex.slice(5, 7), 16);
+            return { r, g, b };
+        }
+
+        function rgbToHex(r, g, b) {
+            // Convert RGB values back to hex
+            return `#${(1 << 24 | r << 16 | g << 8 | b).toString(16).slice(1).toUpperCase()}`;
+        }
+
+        function adjustColor(baseColorHex, rFactor, gFactor, bFactor) {
+            // Get RGB values from base color
+            const baseColor = hexToRgb(baseColorHex);
+
+            // Apply the factors to adjust the RGB values
+            const r = Math.floor(baseColor.r * rFactor);
+            const g = Math.floor(baseColor.g * gFactor);
+            const b = Math.floor(baseColor.b * bFactor);
+
+            // Ensure the values are in the valid range (0-255)
+            return rgbToHex(Math.max(0, Math.min(255, r)), Math.max(0, Math.min(255, g)), Math.max(0, Math.min(255, b)));
+        }
+
+        function setAccentColorRgb(r, g, b) {
+            const accentColorHex = getComputedStyle(document.documentElement).getPropertyValue('--accent-color').trim();
+
+            // Check if accentColorHex is valid (non-empty string and valid hex)
+            if (accentColorHex && /^#[0-9A-F]{6}$/i.test(accentColorHex)) {
+                // Convert the hex color to RGB
+                const { r, g, b } = hexToRgb(accentColorHex);
+                
+                // Set the --accent-color-rgb custom property in CSS
+                document.documentElement.style.setProperty('--accent-color-rgb', `${r}, ${g}, ${b}`);
+            } else {
+                // If the accent color is invalid or missing, we keep the default RGB value (fallback)
+                console.warn('Accent color failed to load, using default RGB value.');
+            }
+        }
+
+        function setFooterVariants() {
+            // Get the base color from the CSS custom property '--navbar-bg'
+            const navbarBg = getComputedStyle(document.documentElement).getPropertyValue('--navbar-bg').trim();
+
+            // Define the change factors based on our previous calculations
+            const factors = [
+                { rFactor: 0.45, gFactor: 0.74, bFactor: 0.78 },  // Variant 1
+                { rFactor: 0.55, gFactor: 0.79, bFactor: 0.82 },  // Variant 2
+                { rFactor: 0.82, gFactor: 0.88, bFactor: 0.88 }   // Variant 3
+            ];
+
+            // For each variant, adjust the base color and set it as a CSS custom property
+            factors.forEach((factor, index) => {
+                const variantColor = adjustColor(navbarBg, factor.rFactor, factor.gFactor, factor.bFactor);
+                document.documentElement.style.setProperty(`--footer-variant${index + 1}`, variantColor);
+            });
+        }
+
+        // Call the function to set the variants
+        setFooterVariants();
+        setAccentColorRgb();
+    });
+</script>
+<!-- Start Header Area -->
+<header class="header">
+    <!-- Header Top -->
+    <div class="header-top">
+        <div class="container">
+            <div class="row">
+                <!-- Top Left -->
+                <div class="col-lg-6">
+                    <div class="hl_top-left">
+
+                        {% if current_agency %}
+                            <span>
+                                <i class="bi bi-envelope"></i>
+                                {{ current_agency.email }}
+                            </span>
+
+                            <span>
+                                <i class="bi bi-geo-alt"></i>
+                                {{ current_agency.wilaya }} - {{ current_agency.commune }}
+                                {% if current_agency.address %}
+                                    , {{ current_agency.address }}
+                                {% endif %}
+                            </span>
+                        {% endif %}
+
+                    </div>
+                </div>
+                <!-- Top Right -->
+                <div class="col-lg-6">
+                    <!-- Language -->
+                    <div class="language-top">
+                        <span>English <i class="bi bi-arrow-down"></i></span>
+                        <ul>
+                            <li><a href="#">Arabic</a></li>
+                            <li><a href="#">French</a></li>
+                            <li><a href="#">English</a></li>
+                        </ul>
+                    </div>
+                    <!-- Social -->
+                    <div class="top-social">
+
+                        {% if current_agency.facebook %}
+                            <span>
+                                <a href="{{ current_agency.facebook }}" target="_blank">
+                                    <i class="fab fa-facebook-f"></i>
+                                </a>
+                            </span>
+                        {% endif %}
+
+                        {% if current_agency.instagram %}
+                            <span>
+                                <a href="{{ current_agency.instagram }}" target="_blank">
+                                    <i class="fab fa-instagram"></i>
+                                </a>
+                            </span>
+                        {% endif %}
+
+                        {% if current_agency.tiktok %}
+                            <span>
+                                <a href="{{ current_agency.tiktok }}" target="_blank">
+                                    <i class="fab fa-tiktok"></i>
+                                </a>
+                            </span>
+                        {% endif %}
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Header Bottom -->
+    <div class="header-bottom sticky-header">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-2 col-md-4 align-self-center">
+                    <div class="logo">
+                        <a href="{% url 'home' %}">
+                            {% if current_agency and current_agency.logo %}
+                                <img src="{{ current_agency.logo.url }}" alt="logo" class="navbar-logo">
+                            {% else %}
+                                <img src="{% static 'assets/img/logo.png' %}" alt="logo">
+                            {% endif %}
+                        </a>
+                    </div>
+                </div>
+                <div class="col-lg-10 col-md-8">
+                    <!-- Header Bottom Right -->
+                    <div class="header-bright">
+                        <div class="mobile-bar">
+                            <div class="canvas_open">
+                                <a href="javascript:void(0)">
+                                    <span></span>
+                                    <span></span>
+                                    <span></span>
+                                </a>
+                            </div>
+                        </div>
+                        <!-- Header Search -->
+                        <div class="header-search">
+                            <div class="header-search-icon" title="Search">
+                                <i class="bi bi-search active"></i>
+                                <i class="fas fa-times"></i>
+                            </div>
+                            <div class="header-top-search-form">
+                                <div class="header-top-search-form-full">
+                                    <form action="#">
+                                        <input type="search" name="search" placeholder="Search Here..">
+                                        <button type="submit"><i class="bi bi-search"></i></button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Menu -->
+                    <div class="menu">
+                        <nav>
+                            <ul>
+                                <li>
+                                    <a href="{% url 'home' %}">Home</a>
+                                </li>
+                                <li><a href="#about">About Us</a></li>
+                            
+                                <li>
+                                    <a href="{% url 'property-list' %}">Shop</a>
+                                </li>
+                              
+                                <li><a href="{% url 'contact' %}">Contact Us</a></li>
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+<!-- End Header Area -->
+<!-- Start Mobile Menu Area -->
+<div class="mobile-menu-area">
+    
+    <!--offcanvas menu area start-->
+    <div class="off_canvars_overlay">
+                
+    </div>
+    <div class="offcanvas_menu">
+        <div class="offcanvas_menu_wrapper">
+            <div class="canvas_close">
+                <a href="javascript:void(0)"><i class="fas fa-times"></i></a>  
+            </div>
+            <div class="mobile-logo">
+                <a href="{% url 'home' %}">
+                    <img src="{% static 'assets/img/logo.png' %}" alt="logo">
+                </a>
+            </div>
+            <div id="menu" class="text-left ">
+                <ul class="offcanvas_main_menu">
+                        <a href="{% url 'home'%}">Home</a>
+                    <li class="menu-item-has-children">
+                        <a href="#about"> About Us</a> 
+                    </li>
+                            <li><a href="faq.html">Faq</a></li>
+                            <li><a href="{% url 'page_404' %}">404 Error</a></li>
+                        </ul>
+                    </li>
+                    <li class="menu-item-has-children">
+                        <a href="{% url 'property-list' %}">Shop</a>
+                    </li>
+                    <li class="menu-item-has-children">
+                        <a href="contact.html"> Contact Us</a> 
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+<!--offcanvas menu area end-->

@@ -1,15 +1,29 @@
 """
-URL configuration for the Django REST Framework boilerplate.
+URL configuration for the Django project.
 """
 from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
+from django.views.generic import TemplateView
+from django.views.static import serve
 from drf_spectacular.views import (
     SpectacularAPIView,
     SpectacularRedocView,
     SpectacularSwaggerView,
 )
+from apps.property.views import PropertyListView
+
+from apps.property import views
+from apps.property.views import get_communes
+from django.http import JsonResponse
+
+def health_check(request):
+    """Health check endpoint for Docker and load balancers."""
+    return JsonResponse({
+        'status': 'healthy',
+        'service': 'realestate-api'
+    })
 
 api_v1_patterns = [
     # path('accounts/', include('apps.accounts.urls')), no need for auth for now
@@ -17,12 +31,29 @@ api_v1_patterns = [
 ]
 
 urlpatterns = [
-    # Admin
-    path(settings.ADMIN_URL if hasattr(settings, 'ADMIN_URL') else 'admin/', admin.site.urls),
+    # Health check
+    path('api/health/', health_check, name='health_check'),
     
+    # Admin
+    path('admin/get_communes/<int:wilaya_id>/', get_communes, name='get_communes'),
+    path(settings.ADMIN_URL if hasattr(settings, 'ADMIN_URL') else 'admin/', admin.site.urls),
+
+    # Public frontend pages (served from Frontend folder)
+    path('', views.home, name='home'),
+    path('about/', TemplateView.as_view(template_name='about.html'), name='about'),
+    path('contact/', TemplateView.as_view(template_name='contact.html'), name='contact'),
+    path('faq/', TemplateView.as_view(template_name='faq.html'), name='faq'),
+    path('shop-grid/', TemplateView.as_view(template_name='shop-grid.html'), name='shop_grid'),
+    path('properties/<str:reference>/', views.property_detail, name='property_detail'),
+    path('product-details/', TemplateView.as_view(template_name='product-details.html'), name='product_details'),
+    path('register/', TemplateView.as_view(template_name='register.html'), name='register'),
+    path('404/', TemplateView.as_view(template_name='404.html'), name='page_404'),
+
+     path('properties/', PropertyListView.as_view(), name='property-list'),
+
     # API v1
     path('api/v1/', include(api_v1_patterns)),
-    
+
     # API Documentation
     path('api/schema/', SpectacularAPIView.as_view(), name='schema'),
     path('api/docs/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
@@ -30,8 +61,25 @@ urlpatterns = [
 ]
 
 if settings.DEBUG:
+    # Serve existing frontend assets directly from the Frontend folder
+    urlpatterns += [
+        path(
+            'style.css',
+            serve,
+            {
+                'document_root': settings.BASE_DIR / 'Frontend',
+                'path': 'style.css',
+            },
+            name='frontend-style',
+        ),
+    ]
+    urlpatterns += static(
+        '/assets/',
+        document_root=settings.BASE_DIR / 'Frontend' / 'assets',
+    )
+
+    # Media files
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
     
     try:
         import debug_toolbar

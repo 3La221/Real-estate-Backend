@@ -1,0 +1,421 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}BHouse - Real Estate HTML5 Template{% endblock %}
+
+{% block content %}
+<style>
+.about-img {
+    width: 100%;
+    height: 80vh; /* or any height you want */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.about-img-responsive {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+}
+</style>
+<body>
+	<!-- Start hero Area -->
+	<section class="hero-section2 section-padding" style="background-image:url('{{ current_agency.cover_image.url}}');">
+		<div class="container">
+			<div class="row">
+				<div class="col-lg-8 offset-lg-2 text-center">
+					<div class="hero-section2-caption pt-100">
+						<h2>{{current_agency.hero_title}}</h2>
+						<div class="find-form2 mt-20">
+							<ul class="nav nav-tabs" id="myTabForm" role="tablist">
+							  	<li class="nav-item" role="presentation">
+							    	<button class="nav-link active" id="renthome-tab" data-bs-toggle="tab" data-bs-target="#renthome" role="tab" aria-controls="renthome" aria-selected="true"><i class="fas fa-home"></i> Rent Home</button>
+							  	</li>
+							  	<li class="nav-item" role="presentation">
+							   	 	<button class="nav-link" id="salehome-tab" data-bs-toggle="tab" data-bs-target="#salehome" role="tab" aria-controls="salehome" aria-selected="false"><i class="fas fa-home"></i> Sale Home</button>
+							  	</li>
+							</ul>
+							<div class="tab-content mt-30" id="myTabFormContent">
+							  	<div class="tab-pane fade show active" id="renthome" role="tabpanel" aria-labelledby="renthome-tab">
+							  		<div class="find-form2-full">
+							  			<div class="row">
+							  				<form action="#">
+												<div class="row">
+													<div class="col-lg-3 col-sm-6">
+														<input type="text" name="name" placeholder="Name">
+													</div>
+													<div class="col-lg-3 col-sm-6">
+														<select name="category">
+															<option value="Region">Your Region</option>
+															<option value="United">United States</option>
+															<option value="India">India</option>
+															<option value="Bangladesh">Bangladesh</option>
+															<option value="Bangladesh">Bangladesh</option>
+															<option value="Bangladesh">Bangladesh</option>
+															<option value="Bangladesh">Bangladesh</option>
+															<option value="Afghanistan">Afghanistan</option>
+															<option value="Albania">Albania</option>
+															<option value="Algeria">Algeria</option>
+														</select>
+													</div>
+													<div class="col-lg-3 col-sm-6">
+														<select name="category">
+															<option value="t">Services Type</option>
+															<option value="t">Services Type 1</option>
+															<option value="t">Services Type 2</option>
+															<option value="t">Services Type 3</option>
+															<option value="t">Services Type 4</option>
+															<option value="t">Services Type 5</option>
+															<option value="t">Services Type 6</option>
+														</select>
+													</div>
+													<div class="col-lg-3 col-sm-6">
+														<button class="button-1" type="submit">Find Now</button>
+													</div>
+												</div>
+											</form>
+							  			</div>
+							  		</div>
+							  	</div>
+							  	<div class="tab-pane fade" id="salehome" role="tabpanel" aria-labelledby="salehome-tab">
+							  		<div class="find-form2-full">
+							  			<div class="row">
+							  				<form action="#">
+												<div class="row">
+													<div class="col-lg-3 col-sm-6">
+														<input type="text" name="name" placeholder="Name">
+													</div>
+													<div class="col-lg-3 col-sm-6">
+														<select name="category">
+															<option value="Region">Your Region</option>
+															<option value="United">United States</option>
+															<option value="India">India</option>
+															<option value="Bangladesh">Bangladesh</option>
+															<option value="Bangladesh">Bangladesh</option>
+															<option value="Bangladesh">Bangladesh</option>
+															<option value="Bangladesh">Bangladesh</option>
+															<option value="Afghanistan">Afghanistan</option>
+															<option value="Albania">Albania</option>
+															<option value="Algeria">Algeria</option>
+														</select>
+													</div>
+													<div class="col-lg-3 col-sm-6">
+														<select name="category">
+															<option value="t">Services Type</option>
+															<option value="t">Services Type 1</option>
+															<option value="t">Services Type 2</option>
+															<option value="t">Services Type 3</option>
+															<option value="t">Services Type 4</option>
+															<option value="t">Services Type 5</option>
+															<option value="t">Services Type 6</option>
+														</select>
+													</div>
+													<div class="col-lg-3 col-sm-6">
+														<button class="button-1" type="submit">Find Now</button>
+													</div>
+												</div>
+											</form>
+							  			</div>
+							  		</div>
+							  	</div>
+							</div>
+
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+	<!-- End hero Area -->
+
+	<!-- Start About Area -->
+	<section class="about-area section-padding" id="about">
+		<div class="container">
+			<div class="row">
+				<div class="col-lg-6">
+					<div class="about-img">
+						<img src="{{ current_agency.about_us_image.url }}" alt="img" class="about-img-responsive">
+					</div>
+				</div>
+				<div class="col-lg-6 align-self-center">
+					<div class="about-content">
+						<h4 class="sc_subtitle"><span>About Us</span></h4>
+						<h2 class="sc_title">{{current_agency.about_us_title}}</h2>
+						<p>{{current_agency.description}}</p>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+	<!-- End About Area -->
+	<!-- Start Services Area -->
+	<section class="section-padding-2 section-bg">
+		<div class="container">
+			<!-- Section Headding -->
+			<div class="row">
+				<div class="col-lg-12 mb-50 text-center">
+					<div class="section-headding">
+						<h4 class="sc_subtitle"><span>Our Services</span></h4>
+						<h2 class="sc_title">Our Main Focus</h2>
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<!-- Single -->
+				<div class="col-lg-4 col-md-6 mb-30">
+					<div class="info-box">
+						<div class="icon">
+							<img src="/assets/img/1.png" alt="services">
+						</div>
+						<div class="content">
+							<h2><a href="services-details.html">Buy a home</a></h2>
+							<p> Arose mr rapid in so vexed words. Gay welcome led add to lasting chiefly say to looking for better. </p>
+							<a class="get_link" href="services-details.html">Get Now <i class="bi bi-arrow-right"></i></a>
+						</div>
+					</div>
+				</div>
+				<!-- Single -->
+				<div class="col-lg-4 col-md-6 mb-30">
+					<div class="info-box">
+						<div class="icon">
+							<img src="/assets/img/2.png" alt="services">
+						</div>
+						<div class="content">
+							<h2><a href="services-details.html">Sell a home</a></h2>
+							<p> Arose mr rapid in so vexed words. Gay welcome led add to lasting chiefly say to looking for better. </p>
+							<a class="get_link" href="services-details.html">Get Now <i class="bi bi-arrow-right"></i></a>
+						</div>
+					</div>
+				</div>
+				<!-- Single -->
+				<div class="col-lg-4 col-md-6 mb-30">
+					<div class="info-box">
+						<div class="icon">
+							<img src="/assets/img/3.png" alt="services">
+						</div>
+						<div class="content">
+							<h2><a href="services-details.html">Rent a home</a></h2>
+							<p> Arose mr rapid in so vexed words. Gay welcome led add to lasting chiefly say to looking for better. </p>
+							<a class="get_link" href="services-details.html">Get Now <i class="bi bi-arrow-right"></i></a>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+	<!-- End Services Area -->
+	<!-- Start Counter Area -->
+	<section class="section-padding-2 counter-area" style="background-image:url('{{current_agency.cover_image.url}}');">
+		<div class="container">
+			<div class="row">
+				<!-- Single -->
+				<div class="col-lg-3 col-md-6 mb-30">
+					<div class="counter-item">
+						<div class="icon">
+							<i class="fas fa-dna"></i>
+						</div>
+						<div class="content">
+							<div class="title">
+								<h2 class="counter">255</h2>
+								<h3>+</h3>
+							</div>
+							<p>Remaining Project</p>
+						</div>
+					</div>
+				</div>
+				<!-- Single -->
+				<div class="col-lg-3 col-md-6 mb-30">
+					<div class="counter-item">
+						<div class="icon">
+							<i class="fas fa-tasks"></i>
+						</div>
+						<div class="content">
+							<div class="title">
+								<h2 class="counter">201</h2>
+								<h3>+</h3>
+							</div>
+							<p>Projects Completed</p>
+						</div>
+					</div>
+				</div>
+				<!-- Single -->
+				<div class="col-lg-3 col-md-6 mb-30">
+					<div class="counter-item">
+						<div class="icon">
+							<i class="far fa-gem"></i>
+						</div>
+						<div class="content">
+							<div class="title">
+								<h2 class="counter">100</h2>
+								<h3>+</h3>
+							</div>
+							<p>Business Start-up</p>
+						</div>
+					</div>
+				</div>
+				<!-- Single -->
+				<div class="col-lg-3 col-md-6 mb-30">
+					<div class="counter-item">
+						<div class="icon">
+							<i class="fas fa-user-tie"></i>
+						</div>
+						<div class="content">
+							<div class="title">
+								<h2 class="counter">25</h2>
+								<h3>+</h3>
+							</div>
+							<p>Former Employer</p>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+	<!-- Start Counter Area -->
+	
+	
+	<!-- Start Featured Product Area -->
+	<section class="section-padding">
+		<div class="container">
+			<!-- Section Headding -->
+			<div class="row">
+				<div class="col-lg-12 mb-50 text-center">
+					<div class="section-headding">
+						<h4 class="sc_subtitle"><span>Property</span></h4>
+						<h2 class="sc_title">Featured Property</h2>
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="featured-property owl-carousel">
+					{% for property in featured %}
+					<div class="product-item">
+						<!-- Thumbnail -->
+						<div class="thumbnail">
+							<a href="{% url 'property_detail' property.reference %}">
+								<img src="{{ property.image.url }}" alt="{{ property.title }}">
+							</a>
+							{% if property.featured %}
+							<div class="badge">
+								<span>Featured</span>
+							</div>
+							{% endif %}
+						</div>
+						
+						<!-- Content -->
+						<div class="content">
+							<div class="user-thum">
+								<img src="{{ property.user.profile_image.url }}" alt="{{ property.user.username }}">
+							</div>
+							<h2 class="title">
+								<a href="{% url 'property_detail' property.reference %}">{{ property.title }}</a>
+							</h2>
+							<p class="location">{{ property.location }}</p>
+							<div class="price">
+								<span>${{ property.price|floatformat:0 }} <small>/mo</small></span>
+							</div>
+						</div>
+
+						<!-- Property Lists -->
+						<div class="property-lists">
+							<ul>
+								{% if property.bedrooms %}
+								<li><i class="fas fa-bed"></i> <span>{{ property.bedrooms }} Beds</span></li>
+								{% endif %}
+								
+								{% if property.bathrooms %}
+								<li><i class="fas fa-bath"></i> <span>{{ property.bathrooms }} Baths</span></li>
+								{% endif %}
+								
+								{% if property.area_m2 %}
+								<li><i class="fas fa-vector-square"></i> <span>{{ property.area_m2 }} m²</span></li>
+								{% endif %}
+							</ul>
+						</div>
+					</div>
+					{% empty %}
+					<p>No featured properties available.</p>
+					{% endfor %}
+				</div>
+			</div>
+		</div>
+	</section>
+	<!-- End Featured Product Area -->
+	<!-- Start Category Area -->
+	<section class="section-padding-2">
+		<div class="container">
+			<!-- Section Headding -->
+			<div class="row">
+				<div class="col-lg-12 mb-50 text-center">
+					<div class="section-headding">
+						<h4 class="sc_subtitle"><span>Our Category</span></h4>
+						<h2 class="sc_title">Building Aminities</h2>
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="ba_category_full">
+					<ul>
+						{% for amenity in amenities %}
+							<li>
+								<div class="category-block-one">
+									<div class="inner-box">
+										<i class="{{ amenity.icon }}"></i>
+										<h4>
+											<a href="#">{{ amenity.name }}</a>
+										</h4>
+										<span>{{ amenity.total }}</span>
+									</div>
+								</div>
+							</li>
+						{% endfor %}
+					</ul>
+				</div>
+			</div>
+		</div>
+	</section>
+	<!-- End Category Area -->
+	<!-- Start Area Poperties Area -->
+	<section class="section-padding">
+		<div class="container">
+			<div class="row">
+				<div class="col-lg-12 mb-50 text-center">
+					<div class="section-headding">
+						<h4 class="sc_subtitle"><span>Area Properties</span></h4>
+						<h2 class="sc_title">Properties By Location</h2>
+					</div>
+				</div>
+			</div>
+	
+			<div class="row">
+				<div class="properties_Slider owl-carousel">
+					{% for location in locations %}
+						<div class="properties-item">
+							<div class="thumbnail">
+								<a href="{% url 'property-list' %}?wilaya={{ location.pk }}">
+									{% if location.image %}
+										<img src="{{ location.image.url }}" alt="{{ location.name }}">
+									{% else %}
+										<img src="/assets/img/default-property.jpg" alt="{{ location.name }}">
+									{% endif %}
+								</a>
+								<div class="count-img">
+									<span>{{ location.property_count }} Properties</span>
+								</div>
+							</div>
+							<div class="content">
+								<p>{{ location.property_count }} Properties Available</p>
+								<h4><a href="{% url 'property-list' %}?wilaya={{ location.pk }}">{{ location.name }}</a></h4>
+								<a class="button-3" href="{% url 'property-list' %}?wilaya={{ location.pk }}">Browse All</a>
+							</div>
+						</div>
+					{% empty %}
+						<p>No locations found.</p>
+					{% endfor %}
+				</div>
+			</div>
+		</div>
+	</section>	
+</body>
+{% endblock %}

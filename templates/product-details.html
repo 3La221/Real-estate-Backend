@@ -1,0 +1,293 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block extra_css %}
+<style>
+/* Fix carousel image height */
+.poerty_details_single_thumb {
+    overflow: hidden;
+    height: 480px;
+}
+.poerty_details_single_thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Fix gallery grid image height */
+.pp_details_galler .row a {
+    display: block;
+    overflow: hidden;
+    height: 200px;
+}
+.pp_details_galler .row a img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+</style>
+{% endblock %}
+
+{% block title %}{{ property.title }} - {{ property.agency.name }}{% endblock %}
+
+{% block content %}
+
+{% if messages %}
+<div class="container pt-20">
+    {% for message in messages %}
+    <div class="alert alert-{{ message.tags }}" role="alert">{{ message }}</div>
+    {% endfor %}
+</div>
+{% endif %}
+
+<!-- Breadcrumb -->
+<section class="breadcrumb-area section-padding"
+         style="background-image:url('{{cover.image.url}}');">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="breadcrumb-content">
+                    <h2>{{ property.title }}</h2>
+                    <ul>
+                        <li><a href="/">Home</a></li>
+                        <li><i class="fas fa-angle-double-right"></i></li>
+                        <li><a href="/properties/">Properties</a></li>
+                        <li><i class="fas fa-angle-double-right"></i></li>
+                        <li>{{ property.title }}</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Gallery Carousel -->
+{% if property.media.exists %}
+<div class="poperty_details_thumbnail pt-50">
+    <div class="poperty_details_thumbnail_full owl-carousel">
+        {% for media in gallery %}
+        <div class="poerty_details_single_thumb">
+            <a data-rel="lightcase:myCollection:det" href="{{ media.image.url }}">
+                <img src="{{ media.image.url }}" alt="{{ property.title }}">
+            </a>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
+
+<!-- Main Content -->
+<section class="pt-50 pb-50">
+    <div class="container">
+        <div class="row">
+
+            <!-- Left Column -->
+            <div class="col-lg-8">
+
+                <!-- Title & Quick Facts -->
+                <div class="poperty_details-full mb-20">
+                    <ul class="prs_lists">
+                        {% if property.bedrooms %}
+                        <li><span class="bed">{{ property.bedrooms }} Bed{{ property.bedrooms|pluralize }}</span></li>
+                        {% endif %}
+                        {% if property.bathrooms %}
+                        <li><span class="bath">{{ property.bathrooms }} Bath{{ property.bathrooms|pluralize }}</span></li>
+                        {% endif %}
+                        {% if property.parking %}
+                        <li><span class="gar">Parking</span></li>
+                        {% endif %}
+                        <li><span class="sqft">{{ property.area_m2 }} m²</span></li>
+                    </ul>
+                    <h2 class="title">{{ property.title }}</h2>
+                    <div class="location">
+                        <i class="bi bi-geo-alt"></i>
+                        {{ property.commune.name }}, {{ property.wilaya.name }}
+                        {% if property.address %} — {{ property.address }}{% endif %}
+                    </div>
+                </div>
+
+                <!-- Description -->
+                <div class="ppp_cont mb-20">
+                    <h4>About Property</h4>
+                    <p>{{ property.description|linebreaksbr }}</p>
+                </div>
+
+                <!-- Details -->
+                <div class="pp_details_advance_f mb-20">
+                    <h4>Property Details</h4>
+                    <ul class="row p-0 m-0">
+                        {% if property.bedrooms %}
+                        <li class="col-lg-4 col-md-6">
+                            <i class="fa fa-bed"></i> {{ property.bedrooms }} Bedroom{{ property.bedrooms|pluralize }}
+                        </li>
+                        {% endif %}
+                        {% if property.bathrooms %}
+                        <li class="col-lg-4 col-md-6">
+                            <i class="fa fa-bath"></i> {{ property.bathrooms }} Bathroom{{ property.bathrooms|pluralize }}
+                        </li>
+                        {% endif %}
+                        <li class="col-lg-4 col-md-6">
+                            <i class="fa fa-expand-arrows-alt"></i> {{ property.area_m2 }} m²
+                        </li>
+                        {% if property.floor is not None %}
+                        <li class="col-lg-4 col-md-6">
+                            <i class="fa fa-layer-group"></i> Floor {{ property.floor }}
+                        </li>
+                        {% endif %}
+                        <li class="col-lg-4 col-md-6">
+                            <i class="fa fa-tag"></i> {{ property.get_listing_type_display }}
+                        </li>
+                        <li class="col-lg-4 col-md-6">
+                            <i class="fa fa-home"></i> {{ property.property_type.name }}
+                        </li>
+                        {% if property.furnished %}
+                        <li class="col-lg-4 col-md-6">
+                            <i class="fa fa-couch"></i> Furnished
+                        </li>
+                        {% endif %}
+                        {% if property.parking %}
+                        <li class="col-lg-4 col-md-6">
+                            <i class="fa fa-car"></i> Parking Available
+                        </li>
+                        {% endif %}
+                        {% if property.available_from %}
+                        <li class="col-lg-4 col-md-6">
+                            <i class="fa fa-calendar"></i> Available {{ property.available_from }}
+                        </li>
+                        {% endif %}
+                        <li class="col-lg-4 col-md-6">
+                            <i class="fa fa-hashtag"></i> Ref: {{ property.reference }}
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Amenities -->
+                {% if amenities %}
+                <div class="pp_ameneties_cont mb-20">
+                    <h4>Amenities</h4>
+                    <ul>
+                        {% for pa in amenities %}
+                        <li>{{ pa.amenity.name }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                {% endif %}
+
+                <!-- Gallery Grid -->
+                {% if gallery %}
+                <div class="pp_details_galler mb-20">
+                    <h4>Gallery</h4>
+                    <div class="row">
+                        {% for media in gallery %}
+                        <div class="col-lg-4 col-6 mb-10">
+                            <a data-rel="lightcase:myCollection:gallery" href="{{ media.image.url }}">
+                                <img src="{{ media.image.url }}" alt="{{ property.title }}">
+                            </a>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endif %}
+
+            </div>
+
+            <!-- Sidebar -->
+            <div class="col-lg-4">
+
+                <!-- Price -->
+                <div class="mb-20 p-3" style="background:#f8f8f8; border-radius:8px;">
+                    <h3 style="margin:0;">
+                        {{ property.price|floatformat:0 }} DZD
+                        {% if property.negotiable %}
+                        <small style="font-size:13px; color:#888;">Negotiable</small>
+                        {% endif %}
+                    </h3>
+                    <span class="badge" style="background:#27ae60; color:#fff; padding:4px 10px; border-radius:4px;">
+                        {{ property.get_listing_type_display }}
+                    </span>
+                </div>
+
+                <!-- Agency Card -->
+                <div class="list_book_ab_auth">
+                    <div class="top">
+                        {% if property.agency.logo %}
+                        <div class="thumb">
+                            <img src="{{ property.agency.logo.url }}" alt="{{ property.agency.name }}">
+                        </div>
+                        {% endif %}
+                        <div class="content">
+                            <h4>{{ property.agency.name }}</h4>
+                            <p class="location">
+                                <i class="bi bi-geo-alt"></i>
+                                {{ property.agency.commune.name }}, {{ property.agency.wilaya.name }}
+                            </p>
+                            {% for contact in primary_contacts %}
+								<a href="tel:{{ contact.number }}">
+									<i class="fas fa-phone-alt"></i> {{ contact.number }}
+								</a>
+							{% endfor %}
+                        </div>
+                    </div>
+
+                    <!-- Contact Form -->
+                    <div class="btm">
+                        <h5>Send a Message</h5>
+                        <form method="POST" action="">
+                            {% csrf_token %}
+                            <div class="single_field">
+                                <label for="name">Name *</label>
+                                <input type="text" name="name" id="name" required
+                                       value="{{ request.POST.name|default:'' }}">
+                            </div>
+                            <div class="single_field">
+                                <label for="email">Email *</label>
+                                <input type="email" name="email" id="email" required
+                                       value="{{ request.POST.email|default:'' }}">
+                            </div>
+                            <div class="single_field">
+                                <label for="phone">Phone</label>
+                                <input type="text" name="phone" id="phone"
+                                       value="{{ request.POST.phone|default:'' }}">
+                            </div>
+                            <div class="single_field">
+                                <label for="message">Message *</label>
+                                <textarea name="message" id="message" required>{{ request.POST.message|default:'' }}</textarea>
+                            </div>
+                            <div class="single_field">
+                                <button type="submit" class="button-1">Send Message</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Social Links -->
+                {% if property.agency.facebook or property.agency.instagram or property.agency.tiktok %}
+                <div class="mt-20 p-3" style="background:#f8f8f8; border-radius:8px;">
+                    <h5>Follow the Agency</h5>
+                    {% if property.agency.facebook %}
+                    <a href="{{ property.agency.facebook }}" target="_blank" style="margin-right:10px;">
+                        <i class="fab fa-facebook"></i> Facebook
+                    </a>
+                    {% endif %}
+                    {% if property.agency.instagram %}
+                    <a href="{{ property.agency.instagram }}" target="_blank" style="margin-right:10px;">
+                        <i class="fab fa-instagram"></i> Instagram
+                    </a>
+                    {% endif %}
+                    {% if property.agency.tiktok %}
+                    <a href="{{ property.agency.tiktok }}" target="_blank">
+                        <i class="fab fa-tiktok"></i> TikTok
+                    </a>
+                    {% endif %}
+                </div>
+                {% endif %}
+
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="scroll-area">
+    <i class="bi bi-arrow-up"></i>
+</div>
+
+{% endblock %}

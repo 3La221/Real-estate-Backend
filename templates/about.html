@@ -1,0 +1,261 @@
+{% extends 'base.html' %}
+
+
+{% load static %}
+{% static "assets/img/breadcrumb.jpg" as breadcrumb_bg %}
+
+
+{% block title %}BHouse - Real Estate HTML5 Template{% endblock %}
+
+{% block content %}
+
+    
+    <!-- Start Breadcrumb Area -->
+<section style="background-image: url('{{ breadcrumb_bg }}');">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="breadcrumb-content">
+                        <h2>About Us</h2>
+                        <ul>
+                            <li><a href="{% url 'home' %}">Home</a></li>
+                            <li><i class="fas fa-angle-double-right"></i></li>
+                            <li>About Us</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- End Breadcrumb Area -->
+    <!-- Start About Area -->
+    <section class="about-area section-padding">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="about-img">
+                        <img src="{% static 'assets/img/about.png' %}" alt="img">
+                        <div class="about-vedio">
+                            <div class="video-btn">
+                                <a data-rel="lightcase" href="https://player.vimeo.com/video/553110309?h=dc4ee31dc4"><i class="fas fa-play"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6 align-self-center">
+                    <div class="about-content">
+                        <h4 class="sc_subtitle"><span>About Us</span></h4>
+                        <h2 class="sc_title">Architects With Difference & New Approch.</h2>
+                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi feugiat lectus sed justo sollicitudin, non porttitor nunc varius. Donec commodo ac nibh quis aliquet. Suspendisse varius hendrerit odio eget efficitur. Mauris sed neque porta, lacinia metus sit amet, laoreet quam. Maecenas dapibus ligula vel magna hendrerit.</p>
+                        <ul>
+                            <li><i class="bi bi-house"></i> <span>Smart Home Design </span></li>
+                            <li><i class="bi bi-border-bottom"></i> <span>Beautiful Scene Around</span></li>
+                            <li><i class="bi bi-shield-fill-check"></i> <span>Complete 24/7 Security</span></li>
+                            <li><i class="bi bi-life-preserver"></i> <span>Exceptional Lifestyle </span></li>
+                        </ul>
+                        <p> Morbi porttitor nibh justo, sit amet imperdiet ligula laoreet eu. Sed mollis nec sem vel laoreet. Donec tincidunt consequat gravida. Nullam accumsan lobortis nisl sed gravida. Aliquam facilisis blandit accumsan. Suspendisse elementum sit amet tortor eget mollis.</p>
+                        <a class="button-1" href="{% url 'about' %}">About Us</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- End About Area -->
+
+    <!-- Start Services Area -->
+    <section class="section-padding-2 section-bg">
+        <div class="container">
+            <!-- Section Headding -->
+            <div class="row">
+                <div class="col-lg-12 mb-50 text-center">
+                    <div class="section-headding">
+                        <h4 class="sc_subtitle"><span>Our Services</span></h4>
+                        <h2 class="sc_title">Our Main Focus</h2>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <!-- Single -->
+                <div class="col-lg-4 col-md-6 mb-30">
+                    <div class="info-box">
+                        <div class="icon">
+                            <img src="{% static 'assets/img/1.png' %}" alt="services">
+                        </div>
+                        <div class="content">
+                            <h2><a href="services-details.html">Buy a home</a></h2>
+                            <p> Arose mr rapid in so vexed words. Gay welcome led add to lasting chiefly say to looking for better. </p>
+                            <a class="get_link" href="services-details.html">Get Now <i class="bi bi-arrow-right"></i></a>
+                        </div>
+                    </div>
+                </div>
+                <!-- Single -->
+                <div class="col-lg-4 col-md-6 mb-30">
+                    <div class="info-box">
+                        <div class="icon">
+                            <img src="{% static 'assets/img/2.png' %}" alt="services">
+                        </div>
+                        <div class="content">
+                            <h2><a href="services-details.html">Sell a home</a></h2>
+                            <p> Arose mr rapid in so vexed words. Gay welcome led add to lasting chiefly say to looking for better. </p>
+                            <a class="get_link" href="services-details.html">Get Now <i class="bi bi-arrow-right"></i></a>
+                        </div>
+                    </div>
+                </div>
+                <!-- Single -->
+                <div class="col-lg-4 col-md-6 mb-30">
+                    <div class="info-box">
+                        <div class="icon">
+                            <img src="{% static 'assets/img/3.png' %}" alt="services">
+                        </div>
+                        <div class="content">
+                            <h2><a href="services-details.html">Rent a home</a></h2>
+                            <p> Arose mr rapid in so vexed words. Gay welcome led add to lasting chiefly say to looking for better. </p>
+                            <a class="get_link" href="services-details.html">Get Now <i class="bi bi-arrow-right"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- End Services Area -->
+
+    <!-- Start Team Area -->
+    <section class="section-padding-2">
+        <div class="container">
+            <!-- Section Headding -->
+            <div class="row">
+                <div class="col-lg-12 mb-50 text-center">
+                    <div class="section-headding">
+                        <h4 class="sc_subtitle"><span>Team</span></h4>
+                        <h2 class="sc_title">Property Agents</h2>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <!-- Team ITem -->
+                <div class="col-lg-4 col-md-6 mb-30">
+                    <div class="team-item">
+                        <div class="thumbnail">
+                            <img src="{% static 'assets/img/team/1.jpg' %}" alt="team">
+                            <div class="team-social">
+                                <ul>
+                                    <li><a href="#"><i class="fab fa-facebook-f"></i></a></li>
+                                    <li><a href="#"><i class="fab fa-twitter"></i></a></li>
+                                    <li><a href="#"><i class="fab fa-instagram"></i></a></li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="content">
+                            <h2>A.H John Doe</h2>
+                            <p>Designer</p>
+                        </div>
+                    </div>
+                </div>
+                <!-- Team ITem -->
+                <div class="col-lg-4 col-md-6 mb-30">
+                    <div class="team-item">
+                        <div class="thumbnail">
+                            <img src="{% static 'assets/img/team/2.jpg' %}" alt="team">
+                            <div class="team-social">
+                                <ul>
+                                    <li><a href="#"><i class="fab fa-facebook-f"></i></a></li>
+                                    <li><a href="#"><i class="fab fa-twitter"></i></a></li>
+                                    <li><a href="#"><i class="fab fa-instagram"></i></a></li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="content">
+                            <h2>A.H John Doe</h2>
+                            <p>Designer</p>
+                        </div>
+                    </div>
+                </div>
+                <!-- Team ITem -->
+                <div class="col-lg-4 col-md-6 mb-30">
+                    <div class="team-item">
+                        <div class="thumbnail">
+                            <img src="{% static 'assets/img/team/3.jpg' %}" alt="team">
+                            <div class="team-social">
+                                <ul>
+                                    <li><a href="#"><i class="fab fa-facebook-f"></i></a></li>
+                                    <li><a href="#"><i class="fab fa-twitter"></i></a></li>
+                                    <li><a href="#"><i class="fab fa-instagram"></i></a></li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="content">
+                            <h2>A.H John Doe</h2>
+                            <p>Designer</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- End Team Area -->
+
+    <!-- Start Testimonial Area -->
+    <section class="section-padding section-bg">
+        <div class="container">
+            <!-- Section Headding -->
+            <div class="row">
+                <div class="col-lg-12 mb-50 text-center">
+                    <div class="section-headding">
+                        <h4 class="sc_subtitle"><span>Our Awesome Testimonial</span></h4>
+                        <h2 class="sc_title">Clients Feedback</h2>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12">
+                    <div class="client-testimonial-full owl-carousel">
+                        <!-- Single -->
+                        <div class="testimonial-item">
+                            <div class="thumbnail">
+                                <img src="{% static 'assets/img/tes1.jpg' %}" alt="">
+                            </div>
+                            <div class="content">
+                                <p>Lorem ipsum dolor sit amet, consectetur adipi sicing elit, sed do eiusmod tempor incididunt ut labore.</p>
+                                <h2>Rosalina D. William</h2>
+                                <h4>Founder</h4>
+                            </div>
+                            <div class="btm-big-icon">
+                                <i class="far fa-comments"></i>
+                            </div>
+                        </div>
+                        <!-- Single -->
+                        <div class="testimonial-item">
+                            <div class="thumbnail">
+                                <img src="{% static 'assets/img/tes2.jpg' %}" alt="">
+                            </div>
+                            <div class="content">
+                                <p>Lorem ipsum dolor sit amet, consectetur adipi sicing elit, sed do eiusmod tempor incididunt ut labore.</p>
+                                <h2>Rosalina D. William</h2>
+                                <h4>Founder</h4>
+                            </div>
+                            <div class="btm-big-icon">
+                                <i class="far fa-comments"></i>
+                            </div>
+                        </div>
+                        <!-- Single -->
+                        <div class="testimonial-item">
+                            <div class="thumbnail">
+                                <img src="{% static 'assets/img/tes1.jpg' %}" alt="">
+                            </div>
+                            <div class="content">
+                                <p>Lorem ipsum dolor sit amet, consectetur adipi sicing elit, sed do eiusmod tempor incididunt ut labore.</p>
+                                <h2>Rosalina D. William</h2>
+                                <h4>Founder</h4>
+                            </div>
+                            <div class="btm-big-icon">
+                                <i class="far fa-comments"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- End Testimonial Area -->
+
+{% endblock %}

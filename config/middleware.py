@@ -60,6 +60,7 @@ class TenantMiddleware(MiddlewareMixin):
             tenant = self._get_development_tenant()
             if tenant:
                 request.tenant = tenant
+                request.agency = getattr(tenant, "agency", None)
                 request.tenant_domain = host
                 return None
             else:
@@ -74,8 +75,9 @@ class TenantMiddleware(MiddlewareMixin):
         
         if tenant_id:
             try:
-                tenant = Tenant.objects.get(id=tenant_id, is_active=True)
+                tenant = Tenant.objects.select_related("agency").prefetch_related("agency__contacts").get(id=tenant_id, is_active=True)
                 request.tenant = tenant
+                request.agency = getattr(tenant, "agency", None)
                 request.tenant_domain = host
                 return None
             except Tenant.DoesNotExist:
@@ -86,6 +88,7 @@ class TenantMiddleware(MiddlewareMixin):
         if tenant:
             self._safe_cache_set(cache_key, tenant.id, self.CACHE_TIMEOUT)
             request.tenant = tenant
+            request.agency = getattr(tenant, "agency", None)
             request.tenant_domain = host
             return None
         
@@ -98,7 +101,7 @@ class TenantMiddleware(MiddlewareMixin):
     def _get_tenant_by_domain(self, host):
       
         try:
-            tenant = Tenant.objects.filter(
+            tenant = Tenant.objects.select_related("agency").prefetch_related("agency__contacts").filter(
                 domain=host,
                 is_active=True
             ).first()
@@ -106,7 +109,7 @@ class TenantMiddleware(MiddlewareMixin):
             if tenant:
                 return tenant
             
-            tenants = Tenant.objects.filter(is_active=True)
+            tenants = Tenant.objects.select_related("agency").prefetch_related("agency__contacts").filter(is_active=True)
             for tenant in tenants:
                 if host in tenant.get_all_domains():
                     return tenant
@@ -119,7 +122,7 @@ class TenantMiddleware(MiddlewareMixin):
     def _get_development_tenant(self):
      
         try:
-            tenant = Tenant.objects.filter(
+            tenant = Tenant.objects.select_related("agency").prefetch_related("agency__contacts").filter(
                 domain='localhost',
                 is_active=True
             ).first()
@@ -127,7 +130,7 @@ class TenantMiddleware(MiddlewareMixin):
             if tenant:
                 return tenant
             
-            return Tenant.objects.filter(is_active=True).first()
+            return Tenant.objects.select_related("agency").prefetch_related("agency__contacts").filter(is_active=True).first()
         except Exception as e:
             logger.error(f"Error retrieving development tenant: {str(e)}")
             return None
