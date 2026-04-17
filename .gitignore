@@ -67,7 +67,3 @@ logs/
 docs/_build/
 site/
 
-Frontend/assets/css
-Frontend/assets/fonts
-Frontend/assets/img
-Frontend/assets/js
