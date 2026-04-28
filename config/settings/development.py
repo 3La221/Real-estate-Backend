@@ -18,11 +18,10 @@ DATABASES = {
 
 # Development-specific apps
 INSTALLED_APPS += [
-    'debug_toolbar'
+    
 ]
 
 MIDDLEWARE += [
-    'debug_toolbar.middleware.DebugToolbarMiddleware',
 ]
 
 # Django Debug Toolbar
