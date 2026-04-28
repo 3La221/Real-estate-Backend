@@ -1,256 +1,711 @@
 {% load static %}
+
 <style>
     :root {
-        --primary-color: {{ current_agency.primary_color }};
-        --secondary-color: {{ current_agency.secondary_color }};
-        --accent-color: {{ current_agency.accent_color }};
-        --navbar-bg: {{current_agency.navbar_background_color}};
-
+        --primary-color: {{ current_agency.primary_color|default:'#CBA135' }};
+        --secondary-color: {{ current_agency.secondary_color|default:'#EDF5F8' }};
+        --accent-color: {% if current_agency.accent_color %}{{ current_agency.accent_color }}{% elif current_agency.primary_color %}{{ current_agency.primary_color }}{% else %}#CBA135{% endif %};
+        --navbar-bg: {{ current_agency.navbar_background_color|default:'#0B2B3C' }};
+        --navbar-bg-rgb: 11, 43, 60;
+        --nav-surface: #ffffff;
+        --nav-border: rgba(11, 43, 60, 0.1);
+        --nav-text: #172B36;
+        --nav-muted: #60727C;
     }
-    .navbar-logo {
-    max-height: 60px;   /* adjust based on your header */
-    width: auto;
-    object-fit: contain;
-}
+
+    .site-header {
+        position: relative;
+        z-index: 100;
+        background: var(--nav-surface);
+    }
+
+    .site-header-top {
+        padding: 8px 0;
+        background: var(--navbar-bg);
+        color: rgba(255, 255, 255, 0.88);
+        font-size: 14px;
+    }
+
+    .site-top-row,
+    .site-nav-inner,
+    .site-nav-actions,
+    .site-top-contact,
+    .site-social {
+        display: flex;
+        align-items: center;
+    }
+
+    .site-top-row {
+        justify-content: space-between;
+        gap: 20px;
+    }
+
+    .site-top-contact {
+        gap: 18px;
+        min-width: 0;
+    }
+
+    .site-top-chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        min-width: 0;
+        color: rgba(255, 255, 255, 0.88);
+        line-height: 1.35;
+    }
+
+    .site-top-chip i {
+        color: var(--accent-color);
+        font-size: 15px;
+        flex: 0 0 auto;
+    }
+
+    .site-top-chip span {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .site-top-chip:hover {
+        color: #ffffff;
+    }
+
+    .site-social {
+        gap: 8px;
+        flex: 0 0 auto;
+    }
+
+    .site-social a {
+        width: 30px;
+        height: 30px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        color: #ffffff;
+        border: 1px solid rgba(255, 255, 255, 0.18);
+        border-radius: 8px;
+        transition: all 0.2s ease;
+    }
+
+    .site-social a:hover {
+        background: var(--accent-color);
+        border-color: var(--accent-color);
+        color: #ffffff;
+    }
+
+    .site-nav-bar {
+        background: var(--nav-surface);
+        border-bottom: 1px solid var(--nav-border);
+    }
+
+    .site-nav-bar.sticky {
+        box-shadow: 0 10px 24px rgba(11, 43, 60, 0.12);
+    }
+
+    .site-nav-inner {
+        min-height: 78px;
+        justify-content: space-between;
+        gap: 28px;
+    }
+
+    .site-brand {
+        display: inline-flex;
+        align-items: center;
+        gap: 12px;
+        min-width: 190px;
+        color: var(--nav-text);
+    }
+
+    .site-brand:hover {
+        color: var(--nav-text);
+    }
+
+    .site-brand-mark {
+        width: 54px;
+        height: 54px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        flex: 0 0 auto;
+        border: 1px solid var(--nav-border);
+        border-radius: 8px;
+        background: #ffffff;
+        overflow: hidden;
+    }
+
+    .site-brand-mark img,
+    .mobile-logo img {
+        max-width: 100%;
+        max-height: 100%;
+        object-fit: contain;
+    }
+
+    .site-brand-copy {
+        display: flex;
+        flex-direction: column;
+        min-width: 0;
+        line-height: 1.15;
+    }
+
+    .site-brand-name {
+        color: var(--nav-text);
+        font-size: 17px;
+        font-weight: 700;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        max-width: 220px;
+    }
+
+    .site-brand-label {
+        margin-top: 4px;
+        color: var(--nav-muted);
+        font-size: 12px;
+        font-weight: 500;
+    }
+
+    .site-header .menu {
+        flex: 1 1 auto;
+        display: flex;
+        justify-content: center;
+    }
+
+    .site-header .menu nav ul {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        margin: 0;
+        padding: 0;
+    }
+
+    .site-header .menu ul li {
+        display: block;
+    }
+
+    .site-header .menu ul li a {
+        position: relative;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        min-height: 44px;
+        padding: 10px 14px;
+        color: var(--nav-text);
+        font-size: 15px;
+        font-weight: 600;
+        border-radius: 8px;
+        transition: color 0.2s ease, background 0.2s ease;
+    }
+
+    .site-header .menu ul li a i {
+        color: var(--accent-color);
+        font-size: 15px;
+    }
+
+    .site-header .menu ul li:hover > a,
+    .site-header .menu ul li.active > a {
+        color: var(--navbar-bg);
+        background: rgba(var(--accent-color-rgb, 203, 161, 53), 0.13);
+    }
+
+    .site-nav-actions {
+        gap: 10px;
+        flex: 0 0 auto;
+    }
+
+    .site-header .header-search {
+        margin: 0;
+    }
+
+    .site-header .header-search-icon {
+        width: 42px;
+        height: 42px;
+        color: var(--nav-text);
+        border: 1px solid var(--nav-border);
+        border-radius: 8px;
+        box-shadow: none;
+    }
+
+    .site-header .header-search-icon:hover,
+    .site-header .header-search-icon i.fa-times.active {
+        background: var(--accent-color);
+        color: #ffffff;
+        border-color: var(--accent-color);
+    }
+
+    .site-header .header-top-search-form {
+        top: 52px;
+        right: 0;
+        width: min(380px, 88vw);
+        border: 1px solid var(--nav-border);
+        border-top: 3px solid var(--accent-color);
+        border-radius: 8px;
+        box-shadow: 0 18px 40px rgba(11, 43, 60, 0.16);
+        transform-origin: top right;
+    }
+
+    .site-header .header-top-search-form-full {
+        padding: 14px;
+    }
+
+    .site-header .header-top-search-form-full input {
+        height: 46px;
+        border-radius: 8px;
+    }
+
+    .site-header .header-top-search-form-full button {
+        border-radius: 8px;
+    }
+
+    .site-nav-cta {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        min-height: 42px;
+        padding: 10px 14px;
+        color: #ffffff;
+        background: var(--accent-color);
+        border-radius: 8px;
+        font-size: 14px;
+        font-weight: 700;
+        box-shadow: 0 10px 20px rgba(var(--accent-color-rgb, 203, 161, 53), 0.22);
+    }
+
+    .site-nav-cta:hover {
+        color: #ffffff;
+        background: var(--navbar-bg);
+    }
+
+    .site-header .mobile-bar {
+        display: none;
+    }
+
+    .site-header .canvas_open a {
+        width: 42px;
+        height: 42px;
+        display: inline-flex;
+        flex-direction: column;
+        justify-content: center;
+        gap: 5px;
+        border: 1px solid var(--nav-border);
+        border-radius: 8px;
+        background: #ffffff;
+    }
+
+    .site-header .canvas_open a span {
+        width: 18px;
+        height: 2px;
+        margin: 0 auto;
+        background: var(--nav-text);
+        border-radius: 999px;
+    }
+
+    .site-mobile-menu .offcanvas_menu_wrapper {
+        width: min(340px, 88vw);
+        box-sizing: border-box;
+        margin-left: 0;
+        padding: 24px;
+        background: #ffffff;
+        transform: translateX(-100%);
+        transition: transform 0.35s ease;
+    }
+
+    .site-mobile-menu .offcanvas_menu_wrapper.active {
+        transform: translateX(0);
+    }
+
+    .site-mobile-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        padding-bottom: 18px;
+        border-bottom: 1px solid var(--nav-border);
+    }
+
+    .site-mobile-menu .mobile-logo {
+        width: 58px;
+        height: 58px;
+        margin: 0;
+        border: 1px solid var(--nav-border);
+        border-radius: 8px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+    }
+
+    .site-mobile-title {
+        flex: 1 1 auto;
+        min-width: 0;
+    }
+
+    .site-mobile-title strong,
+    .site-mobile-title span {
+        display: block;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .site-mobile-title strong {
+        color: var(--nav-text);
+        font-size: 16px;
+    }
+
+    .site-mobile-title span {
+        margin-top: 3px;
+        color: var(--nav-muted);
+        font-size: 12px;
+    }
+
+    .site-mobile-menu .canvas_close {
+        position: static;
+        flex: 0 0 auto;
+    }
+
+    .site-mobile-menu .canvas_close a {
+        width: 38px;
+        height: 38px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--nav-text);
+        border: 1px solid var(--nav-border);
+        border-radius: 8px;
+    }
+
+    .site-mobile-menu .offcanvas_main_menu {
+        padding: 18px 0 0;
+        margin: 0;
+    }
+
+    .site-mobile-menu .offcanvas_main_menu li a {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 12px 0;
+        margin: 0;
+        color: var(--nav-text);
+        border-bottom: 1px solid var(--nav-border);
+    }
+
+    .site-mobile-menu .offcanvas_main_menu li.active a,
+    .site-mobile-menu .offcanvas_main_menu li a:hover {
+        color: var(--accent-color);
+    }
+
+    .site-mobile-contact {
+        margin-top: 22px;
+        padding-top: 18px;
+        border-top: 1px solid var(--nav-border);
+    }
+
+    .site-mobile-contact a,
+    .site-mobile-contact span {
+        display: flex;
+        align-items: center;
+        gap: 9px;
+        margin-bottom: 11px;
+        color: var(--nav-muted);
+        font-size: 14px;
+        line-height: 1.35;
+    }
+
+    .site-mobile-contact i {
+        color: var(--accent-color);
+        flex: 0 0 auto;
+    }
+
+    @media (max-width: 991px) {
+        .site-header-top {
+            display: none;
+        }
+
+        .site-nav-inner {
+            min-height: 68px;
+        }
+
+        .site-brand {
+            min-width: 0;
+        }
+
+        .site-brand-mark {
+            width: 48px;
+            height: 48px;
+        }
+
+        .site-brand-name {
+            max-width: 170px;
+        }
+
+        .site-header .menu,
+        .site-nav-cta,
+        .site-header .header-search {
+            display: none;
+        }
+
+        .site-header .mobile-bar {
+            display: block;
+        }
+    }
+
+    @media (max-width: 575px) {
+        .site-brand-copy {
+            display: none;
+        }
+    }
 </style>
+
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         function hexToRgb(hex) {
-            // Convert hex color to RGB values
-            const r = parseInt(hex.slice(1, 3), 16);
-            const g = parseInt(hex.slice(3, 5), 16);
-            const b = parseInt(hex.slice(5, 7), 16);
-            return { r, g, b };
+            if (!hex || !/^#[0-9A-F]{6}$/i.test(hex)) {
+                return null;
+            }
+
+            return {
+                r: parseInt(hex.slice(1, 3), 16),
+                g: parseInt(hex.slice(3, 5), 16),
+                b: parseInt(hex.slice(5, 7), 16)
+            };
         }
 
         function rgbToHex(r, g, b) {
-            // Convert RGB values back to hex
             return `#${(1 << 24 | r << 16 | g << 8 | b).toString(16).slice(1).toUpperCase()}`;
         }
 
         function adjustColor(baseColorHex, rFactor, gFactor, bFactor) {
-            // Get RGB values from base color
-            const baseColor = hexToRgb(baseColorHex);
-
-            // Apply the factors to adjust the RGB values
+            const baseColor = hexToRgb(baseColorHex) || { r: 11, g: 43, b: 60 };
             const r = Math.floor(baseColor.r * rFactor);
             const g = Math.floor(baseColor.g * gFactor);
             const b = Math.floor(baseColor.b * bFactor);
 
-            // Ensure the values are in the valid range (0-255)
-            return rgbToHex(Math.max(0, Math.min(255, r)), Math.max(0, Math.min(255, g)), Math.max(0, Math.min(255, b)));
+            return rgbToHex(
+                Math.max(0, Math.min(255, r)),
+                Math.max(0, Math.min(255, g)),
+                Math.max(0, Math.min(255, b))
+            );
         }
 
-        function setAccentColorRgb(r, g, b) {
+        function setAccentColorRgb() {
             const accentColorHex = getComputedStyle(document.documentElement).getPropertyValue('--accent-color').trim();
+            const accent = hexToRgb(accentColorHex) || { r: 203, g: 161, b: 53 };
+            document.documentElement.style.setProperty('--accent-color-rgb', `${accent.r}, ${accent.g}, ${accent.b}`);
+        }
 
-            // Check if accentColorHex is valid (non-empty string and valid hex)
-            if (accentColorHex && /^#[0-9A-F]{6}$/i.test(accentColorHex)) {
-                // Convert the hex color to RGB
-                const { r, g, b } = hexToRgb(accentColorHex);
-                
-                // Set the --accent-color-rgb custom property in CSS
-                document.documentElement.style.setProperty('--accent-color-rgb', `${r}, ${g}, ${b}`);
-            } else {
-                // If the accent color is invalid or missing, we keep the default RGB value (fallback)
-                console.warn('Accent color failed to load, using default RGB value.');
-            }
+        function setNavbarBgRgb() {
+            const navbarBgHex = getComputedStyle(document.documentElement).getPropertyValue('--navbar-bg').trim();
+            const navbar = hexToRgb(navbarBgHex) || { r: 11, g: 43, b: 60 };
+            document.documentElement.style.setProperty('--navbar-bg-rgb', `${navbar.r}, ${navbar.g}, ${navbar.b}`);
         }
 
         function setFooterVariants() {
-            // Get the base color from the CSS custom property '--navbar-bg'
             const navbarBg = getComputedStyle(document.documentElement).getPropertyValue('--navbar-bg').trim();
-
-            // Define the change factors based on our previous calculations
             const factors = [
-                { rFactor: 0.45, gFactor: 0.74, bFactor: 0.78 },  // Variant 1
-                { rFactor: 0.55, gFactor: 0.79, bFactor: 0.82 },  // Variant 2
-                { rFactor: 0.82, gFactor: 0.88, bFactor: 0.88 }   // Variant 3
+                { rFactor: 0.45, gFactor: 0.74, bFactor: 0.78 },
+                { rFactor: 0.55, gFactor: 0.79, bFactor: 0.82 },
+                { rFactor: 0.82, gFactor: 0.88, bFactor: 0.88 }
             ];
 
-            // For each variant, adjust the base color and set it as a CSS custom property
             factors.forEach((factor, index) => {
                 const variantColor = adjustColor(navbarBg, factor.rFactor, factor.gFactor, factor.bFactor);
                 document.documentElement.style.setProperty(`--footer-variant${index + 1}`, variantColor);
             });
         }
 
-        // Call the function to set the variants
-        setFooterVariants();
         setAccentColorRgb();
+        setNavbarBgRgb();
+        setFooterVariants();
     });
 </script>
-<!-- Start Header Area -->
-<header class="header">
-    <!-- Header Top -->
-    <div class="header-top">
+
+{% with current_url=request.resolver_match.url_name %}
+<header class="header site-header">
+    <div class="header-top site-header-top">
         <div class="container">
-            <div class="row">
-                <!-- Top Left -->
-                <div class="col-lg-6">
-                    <div class="hl_top-left">
+            <div class="site-top-row">
+                <div class="site-top-contact">
+                    {% if current_agency and current_agency.email %}
+                        <a class="site-top-chip" href="mailto:{{ current_agency.email }}">
+                            <i class="bi bi-envelope"></i>
+                            <span>{{ current_agency.email }}</span>
+                        </a>
+                    {% endif %}
 
-                        {% if current_agency %}
+                    {% if current_agency and current_agency.wilaya %}
+                        <span class="site-top-chip">
+                            <i class="bi bi-geo-alt"></i>
                             <span>
-                                <i class="bi bi-envelope"></i>
-                                {{ current_agency.email }}
+                                {{ current_agency.wilaya }}{% if current_agency.commune %}, {{ current_agency.commune }}{% endif %}{% if current_agency.address %}, {{ current_agency.address }}{% endif %}
                             </span>
-
-                            <span>
-                                <i class="bi bi-geo-alt"></i>
-                                {{ current_agency.wilaya }} - {{ current_agency.commune }}
-                                {% if current_agency.address %}
-                                    , {{ current_agency.address }}
-                                {% endif %}
-                            </span>
-                        {% endif %}
-
-                    </div>
+                        </span>
+                    {% endif %}
                 </div>
-                <!-- Top Right -->
-                <div class="col-lg-6">
-                    <!-- Language -->
-                    <div class="language-top">
-                        <span>English <i class="bi bi-arrow-down"></i></span>
-                        <ul>
-                            <li><a href="#">Arabic</a></li>
-                            <li><a href="#">French</a></li>
-                            <li><a href="#">English</a></li>
-                        </ul>
-                    </div>
-                    <!-- Social -->
-                    <div class="top-social">
 
-                        {% if current_agency.facebook %}
-                            <span>
-                                <a href="{{ current_agency.facebook }}" target="_blank">
-                                    <i class="fab fa-facebook-f"></i>
-                                </a>
-                            </span>
-                        {% endif %}
+                <div class="site-social" aria-label="Agency social links">
+                    {% if current_agency.facebook %}
+                        <a href="{{ current_agency.facebook }}" target="_blank" rel="noopener" aria-label="Facebook">
+                            <i class="fab fa-facebook-f"></i>
+                        </a>
+                    {% endif %}
 
-                        {% if current_agency.instagram %}
-                            <span>
-                                <a href="{{ current_agency.instagram }}" target="_blank">
-                                    <i class="fab fa-instagram"></i>
-                                </a>
-                            </span>
-                        {% endif %}
+                    {% if current_agency.instagram %}
+                        <a href="{{ current_agency.instagram }}" target="_blank" rel="noopener" aria-label="Instagram">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                    {% endif %}
 
-                        {% if current_agency.tiktok %}
-                            <span>
-                                <a href="{{ current_agency.tiktok }}" target="_blank">
-                                    <i class="fab fa-tiktok"></i>
-                                </a>
-                            </span>
-                        {% endif %}
-
-                    </div>
+                    {% if current_agency.tiktok %}
+                        <a href="{{ current_agency.tiktok }}" target="_blank" rel="noopener" aria-label="TikTok">
+                            <i class="fab fa-tiktok"></i>
+                        </a>
+                    {% endif %}
                 </div>
             </div>
         </div>
     </div>
-    <!-- Header Bottom -->
-    <div class="header-bottom sticky-header">
+
+    <div class="header-bottom sticky-header site-nav-bar">
         <div class="container">
-            <div class="row">
-                <div class="col-lg-2 col-md-4 align-self-center">
-                    <div class="logo">
-                        <a href="{% url 'home' %}">
-                            {% if current_agency and current_agency.logo %}
-                                <img src="{{ current_agency.logo.url }}" alt="logo" class="navbar-logo">
-                            {% else %}
-                                <img src="{% static 'assets/img/logo.png' %}" alt="logo">
-                            {% endif %}
-                        </a>
-                    </div>
-                </div>
-                <div class="col-lg-10 col-md-8">
-                    <!-- Header Bottom Right -->
-                    <div class="header-bright">
-                        <div class="mobile-bar">
-                            <div class="canvas_open">
-                                <a href="javascript:void(0)">
-                                    <span></span>
-                                    <span></span>
-                                    <span></span>
+            <div class="site-nav-inner">
+                <a class="site-brand" href="{% url 'home' %}" aria-label="Home">
+                    <span class="site-brand-mark">
+                        {% if current_agency and current_agency.logo %}
+                            <img src="{{ current_agency.logo.url }}" alt="{{ current_agency.name }}">
+                        {% else %}
+                            <img src="{% static 'assets/img/logo.png' %}" alt="Real Estate">
+                        {% endif %}
+                    </span>
+                    <span class="site-brand-copy">
+                        <span class="site-brand-name">{{ current_agency.name|default:'Real Estate' }}</span>
+                        <span class="site-brand-label">Real estate agency</span>
+                    </span>
+                </a>
+
+                <div class="menu">
+                    <nav aria-label="Primary navigation">
+                        <ul>
+                            <li class="{% if current_url == 'home' %}active{% endif %}">
+                                <a href="{% url 'home' %}">
+                                    <i class="bi bi-house-door"></i>
+                                    <span>Home</span>
                                 </a>
-                            </div>
+                            </li>
+
+                            <li class="{% if current_url == 'property-list' or current_url == 'shop_grid' or current_url == 'property_detail' %}active{% endif %}">
+                                <a href="{% url 'property-list' %}">
+                                    <i class="bi bi-buildings"></i>
+                                    <span>Properties</span>
+                                </a>
+                            </li>
+
+                            <li class="{% if current_url == 'contact' %}active{% endif %}">
+                                <a href="{% url 'contact' %}">
+                                    <i class="bi bi-chat-dots"></i>
+                                    <span>Contact</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+
+                <div class="site-nav-actions">
+                    <div class="header-search">
+                        <div class="header-search-icon" title="Search">
+                            <i class="bi bi-search active"></i>
+                            <i class="fas fa-times"></i>
                         </div>
-                        <!-- Header Search -->
-                        <div class="header-search">
-                            <div class="header-search-icon" title="Search">
-                                <i class="bi bi-search active"></i>
-                                <i class="fas fa-times"></i>
-                            </div>
-                            <div class="header-top-search-form">
-                                <div class="header-top-search-form-full">
-                                    <form action="#">
-                                        <input type="search" name="search" placeholder="Search Here..">
-                                        <button type="submit"><i class="bi bi-search"></i></button>
-                                    </form>
-                                </div>
+                        <div class="header-top-search-form">
+                            <div class="header-top-search-form-full">
+                                <form action="{% url 'property-list' %}" method="get">
+                                    <input type="search" name="q" placeholder="Search properties">
+                                    <button type="submit" aria-label="Search"><i class="bi bi-search"></i></button>
+                                </form>
                             </div>
                         </div>
                     </div>
-                    <!-- Menu -->
-                    <div class="menu">
-                        <nav>
-                            <ul>
-                                <li>
-                                    <a href="{% url 'home' %}">Home</a>
-                                </li>
-                            
-                                <li>
-                                    <a href="{% url 'property-list' %}">Shop</a>
-                                </li>
-                              
-                                <li><a href="{% url 'contact' %}">Contact Us</a></li>
-                            </ul>
-                        </nav>
+
+                    <a class="site-nav-cta" href="{% url 'property-list' %}">
+                        <i class="bi bi-grid"></i>
+                        <span>Browse</span>
+                    </a>
+
+                    <div class="mobile-bar">
+                        <div class="canvas_open">
+                            <a href="javascript:void(0)" aria-label="Open menu">
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                            </a>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </header>
-<!-- End Header Area -->
-<!-- Start Mobile Menu Area -->
-<div class="mobile-menu-area">
-    
-    <!--offcanvas menu area start-->
-    <div class="off_canvars_overlay">
-                
-    </div>
+
+<div class="mobile-menu-area site-mobile-menu">
+    <div class="off_canvars_overlay"></div>
     <div class="offcanvas_menu">
         <div class="offcanvas_menu_wrapper">
-            <div class="canvas_close">
-                <a href="javascript:void(0)"><i class="fas fa-times"></i></a>  
-            </div>
-            <div class="mobile-logo">
-                <a href="{% url 'home' %}">
-                    <img src="{% static 'assets/img/logo.png' %}" alt="logo">
+            <div class="site-mobile-header">
+                <a class="mobile-logo" href="{% url 'home' %}">
+                    {% if current_agency and current_agency.logo %}
+                        <img src="{{ current_agency.logo.url }}" alt="{{ current_agency.name }}">
+                    {% else %}
+                        <img src="{% static 'assets/img/logo.png' %}" alt="Real Estate">
+                    {% endif %}
                 </a>
+                <div class="site-mobile-title">
+                    <strong>{{ current_agency.name|default:'Real Estate' }}</strong>
+                    <span>Real estate agency</span>
+                </div>
+                <div class="canvas_close">
+                    <a href="javascript:void(0)" aria-label="Close menu"><i class="fas fa-times"></i></a>
+                </div>
             </div>
-            <div id="menu" class="text-left ">
+
+            <div id="menu" class="text-left">
                 <ul class="offcanvas_main_menu">
-                        <a href="{% url 'home'%}">Home</a>
-                    <li class="menu-item-has-children">
-                        <a href="#about"> About Us</a> 
+                    <li class="{% if current_url == 'home' %}active{% endif %}">
+                        <a href="{% url 'home' %}">
+                            <i class="bi bi-house-door"></i>
+                            <span>Home</span>
+                        </a>
                     </li>
-                            <li><a href="faq.html">Faq</a></li>
-                            <li><a href="{% url 'page_404' %}">404 Error</a></li>
-                        </ul>
+                    <li class="{% if current_url == 'property-list' or current_url == 'shop_grid' or current_url == 'property_detail' %}active{% endif %}">
+                        <a href="{% url 'property-list' %}">
+                            <i class="bi bi-buildings"></i>
+                            <span>Properties</span>
+                        </a>
                     </li>
-                    <li class="menu-item-has-children">
-                        <a href="{% url 'property-list' %}">Shop</a>
-                    </li>
-                    <li class="menu-item-has-children">
-                        <a href="contact.html"> Contact Us</a> 
+                    <li class="{% if current_url == 'contact' %}active{% endif %}">
+                        <a href="{% url 'contact' %}">
+                            <i class="bi bi-chat-dots"></i>
+                            <span>Contact</span>
+                        </a>
                     </li>
                 </ul>
             </div>
+
+            {% if current_agency %}
+                <div class="site-mobile-contact">
+                    {% if current_agency.email %}
+                        <a href="mailto:{{ current_agency.email }}">
+                            <i class="bi bi-envelope"></i>
+                            <span>{{ current_agency.email }}</span>
+                        </a>
+                    {% endif %}
+                    {% if current_agency.wilaya %}
+                        <span>
+                            <i class="bi bi-geo-alt"></i>
+                            <span>{{ current_agency.wilaya }}{% if current_agency.commune %}, {{ current_agency.commune }}{% endif %}</span>
+                        </span>
+                    {% endif %}
+                </div>
+            {% endif %}
         </div>
     </div>
 </div>
-<!--offcanvas menu area end-->
+{% endwith %}
