@@ -6,7 +6,7 @@ from .base import *
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', '0.0.0.0','myapp.test','real-estate.atheer-solution.com','aqaardz.atheer-solution.com','islemimmobilier.atheer-solution.com']
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', '0.0.0.0','myapp.test','real-estate.atheer-solution.com','aqaardz.atheer-solution.com','islemimmobilier.atheer-solution.com','*.atheer-solution.com']
 
 # Database - Use SQLite for development
 DATABASES = {
