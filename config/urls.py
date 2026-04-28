@@ -43,7 +43,7 @@ urlpatterns = [
     path('about/', TemplateView.as_view(template_name='about.html'), name='about'),
     path('contact/', TemplateView.as_view(template_name='contact.html'), name='contact'),
     path('faq/', TemplateView.as_view(template_name='faq.html'), name='faq'),
-    path('shop-grid/', TemplateView.as_view(template_name='shop-grid.html'), name='shop_grid'),
+    path('shop-grid/', PropertyListView.as_view(), name='shop_grid'),
     path('properties/<str:reference>/', views.property_detail, name='property_detail'),
     path('product-details/', TemplateView.as_view(template_name='product-details.html'), name='product_details'),
     path('register/', TemplateView.as_view(template_name='register.html'), name='register'),

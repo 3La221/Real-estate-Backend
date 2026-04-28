@@ -7,16 +7,38 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from django_filters.rest_framework import DjangoFilterBackend
 from django.views.generic import ListView
-from django.db.models import F, Q, Count, OuterRef, Prefetch, Subquery
-from .models import Amenity, Property, PropertyMedia, Wilaya
+from django.db.models import Q, Count, OuterRef, Subquery
+from .models import Amenity, Commune, Property, PropertyMedia, PropertyType, Wilaya
 
 from config.pagination import StandardPagination
 
-from .models import Property
 from .serializers import (
     PropertyListSerializer,
     PropertyDetailSerializer,
 )
+
+
+def get_current_agency(request):
+    agency = getattr(request, "agency", None)
+    if agency is None:
+        tenant = getattr(request, "tenant", None)
+        agency = getattr(tenant, "agency", None) if tenant else None
+    if agency and agency.is_active:
+        return agency
+    return None
+
+
+def get_current_agency_property_queryset(request):
+    agency = get_current_agency(request)
+    if agency is None:
+        return Property.objects.none()
+
+    return (
+        Property.objects
+        .filter(agency=agency, is_published=True)
+        .select_related('agency', 'property_type', 'wilaya', 'commune')
+        .prefetch_related('media')
+    )
 
 
 
@@ -87,9 +109,7 @@ class PropertyListView(ListView):
     paginate_by = 9
 
     def get_queryset(self):
-        queryset = Property.objects.filter(is_published=True).select_related(
-            'agency', 'property_type', 'wilaya', 'commune'
-        ).prefetch_related('media')
+        queryset = get_current_agency_property_queryset(self.request)
 
         q = self.request.GET.get('q')
         if q:
@@ -162,25 +182,32 @@ class PropertyListView(ListView):
         params.pop('page', None)  # remove page so pagination links work cleanly
         context['query_params'] = params.urlencode()
 
-        from apps.property.models import PropertyType, Wilaya, Commune
-        context['property_types'] = PropertyType.objects.all()
-        context['wilayas'] = Wilaya.objects.all()
+        current_agency = get_current_agency(self.request)
+        context['current_agency'] = current_agency
+        if current_agency:
+            context['property_types'] = PropertyType.objects.filter(
+                properties__agency=current_agency,
+                properties__is_published=True
+            ).distinct()
+            context['wilayas'] = Wilaya.objects.filter(
+                properties__agency=current_agency,
+                properties__is_published=True
+            ).distinct()
+        else:
+            context['property_types'] = PropertyType.objects.none()
+            context['wilayas'] = Wilaya.objects.none()
 
         context['filters'] = self.request.GET
 
-        context['total_count'] = self.get_queryset().count()
+        paginator = context.get('paginator')
+        context['total_count'] = paginator.count if paginator else len(context['properties'])
 
         return context
     
 def property_detail(request, reference):
     property = get_object_or_404(
-        Property.objects.select_related(
-            'agency', 'wilaya', 'commune', 'property_type'
-        ).prefetch_related(
-            'media', 'propertyamenity_set__amenity'
-        ),
+        get_current_agency_property_queryset(request).prefetch_related('propertyamenity_set__amenity'),
         reference = reference,
-        is_published=True
     )
 
     # Increment views
@@ -232,11 +259,30 @@ def property_detail(request, reference):
     })
 
 def home(request):
+    current_agency = get_current_agency(request)
+    if current_agency is None:
+        return render(request, 'index5.html', {
+            'amenities': Amenity.objects.none(),
+            'featured': Property.objects.none(),
+            'locations': Wilaya.objects.none(),
+        })
+
+    agency_properties = get_current_agency_property_queryset(request)
+
     amenities = (
         Amenity.objects
         .filter(icon__isnull=False)
         .exclude(icon='')
-        .annotate(total=Count('propertyamenity'))
+        .annotate(
+            total=Count(
+                'propertyamenity',
+                filter=Q(
+                    propertyamenity__property__agency=current_agency,
+                    propertyamenity__property__is_published=True,
+                ),
+            )
+        )
+        .filter(total__gt=0)
         .order_by('-total')[:10]
     )
 
@@ -246,15 +292,16 @@ def home(request):
     ).values('image')[:1]
 
     featured_properties = (
-        Property.objects
-        .filter(is_featured=True, is_published=True)
+        agency_properties
+        .filter(is_featured=True)
         .annotate(image=Subquery(cover_image_subquery))
         .order_by('-created_at')[:4]
     )
 
-    # Subquery: one cover image per wilaya (via its first published property)
+    # Subquery: one cover image per wilaya from the current agency's published properties.
     wilaya_cover_subquery = PropertyMedia.objects.filter(
         property__wilaya=OuterRef('pk'),
+        property__agency=current_agency,
         property__is_published=True,
         is_cover=True
     ).values('image')[:1]
@@ -264,15 +311,18 @@ def home(request):
         .annotate(
             property_count=Count(
                 'properties',
-                filter=Q(properties__is_published=True)
+                filter=Q(
+                    properties__agency=current_agency,
+                    properties__is_published=True,
+                ),
+                distinct=True,
             ),
             image=Subquery(wilaya_cover_subquery)
         )
         .filter(property_count__gt=0)
         .order_by('-property_count')[:8]
     )
-    for location in locations_with_properties:
-        print(location.image.url)
+
     return render(request, 'index5.html', {
         'amenities': amenities,
         'featured': featured_properties,
