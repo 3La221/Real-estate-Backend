@@ -184,18 +184,11 @@ class PropertyListView(ListView):
 
         current_agency = get_current_agency(self.request)
         context['current_agency'] = current_agency
-        if current_agency:
-            context['property_types'] = PropertyType.objects.filter(
-                properties__agency=current_agency,
-                properties__is_published=True
-            ).distinct()
-            context['wilayas'] = Wilaya.objects.filter(
-                properties__agency=current_agency,
-                properties__is_published=True
-            ).distinct()
-        else:
-            context['property_types'] = PropertyType.objects.none()
-            context['wilayas'] = Wilaya.objects.none()
+        context['listing_type_choices'] = Property.LISTING_TYPE_CHOICES
+        context['property_types'] = PropertyType.objects.all().order_by('name')
+        context['wilayas'] = Wilaya.objects.all().order_by('name')
+        context['bedroom_options'] = range(1, 6)
+        context['bathroom_options'] = range(1, 4)
 
         context['filters'] = self.request.GET
 
