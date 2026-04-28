@@ -1,5 +1,7 @@
 from django import forms
 from django.contrib import admin
+from django.core.exceptions import PermissionDenied
+from django.db.models import Q
 from django.utils.html import format_html
 from django.urls import reverse
 from adminsortable2.admin import SortableAdminMixin, SortableInlineAdminMixin,SortableAdminBase
@@ -11,6 +13,43 @@ from django.contrib.admin import AdminSite
 from django.urls import path
 from django.shortcuts import render
 from .models import Property, Agency
+
+
+def get_user_agency_queryset(user):
+    if not getattr(user, "is_authenticated", False):
+        return Agency.objects.none()
+
+    if user.is_superuser:
+        return Agency.objects.all()
+
+    if not user.is_staff:
+        return Agency.objects.none()
+
+    filters = Q(owner=user)
+    if getattr(user, "agency_id", None):
+        filters |= Q(id=user.agency_id)
+
+    return Agency.objects.filter(filters).distinct()
+
+
+def get_user_property_queryset(user):
+    qs = Property.objects.select_related("agency", "property_type")
+    if getattr(user, "is_superuser", False):
+        return qs
+
+    return qs.filter(agency__in=get_user_agency_queryset(user))
+
+
+def user_has_agency_access(user, agency):
+    if getattr(user, "is_superuser", False):
+        return True
+    if not getattr(user, "is_staff", False) or agency is None:
+        return False
+    return agency.owner_id == user.id or agency.id == getattr(user, "agency_id", None)
+
+
+def user_has_any_agency_access(user):
+    return getattr(user, "is_superuser", False) or get_user_agency_queryset(user).exists()
 
 
 class PropertyAdminForm(forms.ModelForm):
@@ -67,6 +106,11 @@ class WilayaAdmin(admin.ModelAdmin):
         """Everyone with staff status can view wilayas (needed for dropdowns)"""
         return request.user.is_staff
 
+    def get_model_perms(self, request):
+        if request.user.is_superuser:
+            return super().get_model_perms(request)
+        return {}
+
 
 @admin.register(Commune)
 class CommuneAdmin(admin.ModelAdmin):
@@ -90,6 +134,11 @@ class CommuneAdmin(admin.ModelAdmin):
     def has_view_permission(self, request, obj=None):
         """Everyone with staff status can view communes (needed for dropdowns)"""
         return request.user.is_staff
+
+    def get_model_perms(self, request):
+        if request.user.is_superuser:
+            return super().get_model_perms(request)
+        return {}
 
 
 # -------------------------
@@ -213,26 +262,38 @@ class AgencyAdmin(admin.ModelAdmin):
         return "0 staff"
     staff_count.short_description = "Staff Users"
 
-    # Restrict add permissions for existing tenants
-    def has_add_permission(self, request):
-        if request.user.is_superuser:
-            return True
-        return False
+    def has_module_permission(self, request):
+        return user_has_any_agency_access(request.user)
 
-    # Filter queryset for agency staff
+    def has_view_permission(self, request, obj=None):
+        if obj is None:
+            return user_has_any_agency_access(request.user)
+        return user_has_agency_access(request.user, obj)
+
+    def has_change_permission(self, request, obj=None):
+        if obj is None:
+            return user_has_any_agency_access(request.user)
+        return user_has_agency_access(request.user, obj)
+
+    def has_delete_permission(self, request, obj=None):
+        return request.user.is_superuser
+
+    def has_add_permission(self, request):
+        return request.user.is_superuser
+
     def get_queryset(self, request):
         qs = super().get_queryset(request)
         if request.user.is_superuser:
             return qs
-        if hasattr(request.user, "agency") and request.user.agency:
-            return qs.filter(id=request.user.agency.id)
-        return qs.none()
+        return qs.filter(pk__in=get_user_agency_queryset(request.user).values("pk"))
 
-    # Make tenant readonly after creation
     def get_readonly_fields(self, request, obj=None):
-        if obj:  # editing existing agency
-            return self.readonly_fields + ("tenant",)
-        return self.readonly_fields
+        readonly_fields = list(super().get_readonly_fields(request, obj))
+        if obj:
+            readonly_fields.append("tenant")
+        if not request.user.is_superuser:
+            readonly_fields.extend(("tenant", "owner"))
+        return tuple(dict.fromkeys(readonly_fields))
 
     # Optional: make color picker for primary & secondary colors
     def formfield_for_dbfield(self, db_field, **kwargs):
@@ -262,6 +323,11 @@ class PropertyTypeAdmin(admin.ModelAdmin):
     def has_view_permission(self, request, obj=None):
         """Everyone with staff status can view property types (needed for dropdowns)"""
         return request.user.is_staff
+
+    def get_model_perms(self, request):
+        if request.user.is_superuser:
+            return super().get_model_perms(request)
+        return {}
 
 
 # -------------------------
@@ -326,54 +392,58 @@ class PropertyAdmin(admin.ModelAdmin):
     )
 
     actions = ["publish_properties", "archive_properties", "mark_as_sold", "mark_as_rented", "feature_properties"]
+
+    def has_module_permission(self, request):
+        return user_has_any_agency_access(request.user)
+
+    def has_view_permission(self, request, obj=None):
+        if obj is None:
+            return user_has_any_agency_access(request.user)
+        return user_has_agency_access(request.user, obj.agency)
+
+    def has_change_permission(self, request, obj=None):
+        if obj is None:
+            return user_has_any_agency_access(request.user)
+        return user_has_agency_access(request.user, obj.agency)
+
+    def has_add_permission(self, request):
+        return user_has_any_agency_access(request.user)
+
+    def has_delete_permission(self, request, obj=None):
+        return request.user.is_superuser
     
     def get_queryset(self, request):
-        
-        qs = super().get_queryset(request)
+        qs = super().get_queryset(request).select_related("agency", "property_type")
         
         if request.user.is_superuser:
             return qs
-        
-        if hasattr(request.user, 'agency') and request.user.agency:
-            return qs.filter(agency=request.user.agency)
-        
-        try:
-            user_agency = Agency.objects.get(owner=request.user)
-            return qs.filter(agency=user_agency)
-        except Agency.DoesNotExist:
-            return qs.none()
+        return qs.filter(agency__in=get_user_agency_queryset(request.user))
     
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
         """
-        Auto-select agency for agency staff users.
+        Limit agency choices to agencies the admin user owns or belongs to.
         """
         if db_field.name == "agency":
             if not request.user.is_superuser:
-                if hasattr(request.user, 'agency') and request.user.agency:
-                    kwargs["queryset"] = Agency.objects.filter(id=request.user.agency.id)
-                    kwargs["initial"] = request.user.agency
-                else:
-
-                    try:
-                        user_agency = Agency.objects.get(owner=request.user)
-                        kwargs["queryset"] = Agency.objects.filter(id=user_agency.id)
-                        kwargs["initial"] = user_agency
-                    except Agency.DoesNotExist:
-                        kwargs["queryset"] = Agency.objects.none()
+                user_agencies = get_user_agency_queryset(request.user)
+                kwargs["queryset"] = user_agencies
+                first_agency = user_agencies.first()
+                if first_agency:
+                    kwargs["initial"] = first_agency
         return super().formfield_for_foreignkey(db_field, request, **kwargs)
     
     def save_model(self, request, obj, form, change):
         """
-        Auto-assign agency for non-superusers (one agency per tenant).
+        Prevent non-superusers from saving a property under another agency.
         """
-        if not change and not request.user.is_superuser:
-            # For new properties, auto-assign user's agency
-            try:
-                user_agency = Agency.objects.get(owner=request.user)
-                if not obj.agency:
-                    obj.agency = user_agency
-            except Agency.DoesNotExist:
-                pass
+        if not request.user.is_superuser:
+            user_agencies = get_user_agency_queryset(request.user)
+            if not user_agencies.exists():
+                raise PermissionDenied("You do not have access to an agency.")
+            if obj.agency_id and not user_agencies.filter(pk=obj.agency_id).exists():
+                raise PermissionDenied("You cannot assign properties to another agency.")
+            if not obj.agency_id:
+                obj.agency = user_agencies.first()
         
         super().save_model(request, obj, form, change)
 
@@ -426,6 +496,23 @@ class PropertyAdmin(admin.ModelAdmin):
 class AmenityAdmin(admin.ModelAdmin):
     search_fields = ("name",)
 
+    def has_add_permission(self, request):
+        return request.user.is_superuser
+
+    def has_change_permission(self, request, obj=None):
+        return request.user.is_superuser
+
+    def has_delete_permission(self, request, obj=None):
+        return request.user.is_superuser
+
+    def has_view_permission(self, request, obj=None):
+        return request.user.is_staff
+
+    def get_model_perms(self, request):
+        if request.user.is_superuser:
+            return super().get_model_perms(request)
+        return {}
+
 
 
 class DashboardAdminSite(AdminSite):
@@ -440,42 +527,44 @@ class DashboardAdminSite(AdminSite):
 
     def each_context(self, request):
         context = super().each_context(request)
+        property_qs = get_user_property_queryset(request.user)
+        agency_qs = get_user_agency_queryset(request.user)
         context['dashboard_cards'] = [
             {
                 "title": "Total Properties",
-                "value": Property.objects.count(),
+                "value": property_qs.count(),
                 "icon": "fas fa-building",
                 "color": "bg-primary",
                 "url": "/admin/property/property/",
             },
             {
                 "title": "Active Properties",
-                "value": Property.objects.filter(status="active").count(),
+                "value": property_qs.filter(status="active").count(),
                 "icon": "fas fa-check-circle",
                 "color": "bg-success",
                 "url": "/admin/property/property/?status=active",
             },
             {
                 "title": "Sold Properties",
-                "value": Property.objects.filter(status="sold").count(),
+                "value": property_qs.filter(status="sold").count(),
                 "icon": "fas fa-dollar-sign",
                 "color": "bg-danger",
                 "url": "/admin/property/property/?status=sold",
             },
             {
                 "title": "Rented Properties",
-                "value": Property.objects.filter(status="rented").count(),
+                "value": property_qs.filter(status="rented").count(),
                 "icon": "fas fa-key",
                 "color": "bg-info",
                 "url": "/admin/property/property/?status=rented",
             },
             {
                 "title": "Total Agencies",
-                "value": Agency.objects.count(),
+                "value": agency_qs.count(),
                 "icon": "fas fa-users",
                 "color": "bg-warning",
                 "url": "/admin/property/agency/",
             },
         ]
-        context['latest_properties'] = Property.objects.order_by("-created_at")[:5]
+        context['latest_properties'] = property_qs.order_by("-created_at")[:5]
         return context
