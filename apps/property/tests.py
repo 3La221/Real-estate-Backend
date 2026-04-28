@@ -24,8 +24,10 @@ class AdminOwnershipAccessTests(TestCase):
     def setUpTestData(cls):
         cls.factory = RequestFactory()
         cls.wilaya = Wilaya.objects.create(id="16", name="Alger")
+        cls.wilaya_without_properties = Wilaya.objects.create(id="31", name="Oran")
         cls.commune = Commune.objects.create(id="1601", name="Alger Centre", wilaya=cls.wilaya)
         cls.property_type = PropertyType.objects.create(name="Apartment", slug="apartment")
+        cls.property_type_without_properties = PropertyType.objects.create(name="Villa", slug="villa")
 
         cls.owner_one = User.objects.create_user(
             username="owner_one",
@@ -203,6 +205,24 @@ class AdminOwnershipAccessTests(TestCase):
         property_ids = set(view.get_queryset().values_list("id", flat=True))
 
         self.assertEqual(property_ids, {self.property_one.id})
+
+    def test_property_list_filters_show_all_master_options(self):
+        request = self.request_for(self.owner_one, "/properties/")
+        request.tenant = self.tenant_one
+        request.agency = self.agency_one
+        view = PropertyListView()
+        view.setup(request)
+        view.object_list = view.get_queryset()
+
+        context = view.get_context_data()
+        wilaya_ids = set(context["wilayas"].values_list("id", flat=True))
+        property_type_ids = set(context["property_types"].values_list("id", flat=True))
+
+        self.assertEqual(wilaya_ids, {self.wilaya.id, self.wilaya_without_properties.id})
+        self.assertEqual(property_type_ids, {self.property_type.id, self.property_type_without_properties.id})
+        self.assertEqual(context["listing_type_choices"], Property.LISTING_TYPE_CHOICES)
+        self.assertEqual(list(context["bedroom_options"]), [1, 2, 3, 4, 5])
+        self.assertEqual(list(context["bathroom_options"]), [1, 2, 3])
 
     def test_shop_grid_route_uses_property_list_view(self):
         match = resolve("/shop-grid/")

@@ -3,7 +3,7 @@
 {% load static %}
 {% static "assets/img/breadcrumb.jpg" as breadcrumb_bg %}
 
-{% block title %}{{current_agency.name}}{% endblock %}
+{% block title %}{{current_agency.tagline}}{% endblock %}
 
 
 {% block extra_css %}
@@ -1071,8 +1071,9 @@
                             <label for="listingType">Listing Type</label>
                             <select name="listing_type" id="listingType" class="form-select">
                                 <option value="">All Types</option>
-                                <option value="sale" {% if filters.listing_type == "sale" %}selected{% endif %}>For Sale</option>
-                                <option value="rent" {% if filters.listing_type == "rent" %}selected{% endif %}>For Rent</option>
+                                {% for value, label in listing_type_choices %}
+                                <option value="{{ value }}" {% if filters.listing_type == value %}selected{% endif %}>{{ label }}</option>
+                                {% endfor %}
                             </select>
                         </div>
 
@@ -1115,8 +1116,8 @@
                                 <label for="bedroomsSelect">Minimum Bedrooms</label>
                                 <select name="bedrooms" id="bedroomsSelect" class="form-select">
                                     <option value="">Any</option>
-                                    {% for n in "12345"|make_list %}
-                                    <option value="{{ n }}" {% if filters.bedrooms == n %}selected{% endif %}>{{ n }}+ Bedrooms</option>
+                                    {% for n in bedroom_options %}
+                                    <option value="{{ n }}" {% if filters.bedrooms == n|stringformat:"s" %}selected{% endif %}>{{ n }}+ Bedrooms</option>
                                     {% endfor %}
                                 </select>
                             </div>
@@ -1126,8 +1127,8 @@
                                 <label for="bathroomsSelect">Minimum Bathrooms</label>
                                 <select name="bathrooms" id="bathroomsSelect" class="form-select">
                                     <option value="">Any</option>
-                                    {% for n in "123"|make_list %}
-                                    <option value="{{ n }}" {% if filters.bathrooms == n %}selected{% endif %}>{{ n }}+ Bathrooms</option>
+                                    {% for n in bathroom_options %}
+                                    <option value="{{ n }}" {% if filters.bathrooms == n|stringformat:"s" %}selected{% endif %}>{{ n }}+ Bathrooms</option>
                                     {% endfor %}
                                 </select>
                             </div>
