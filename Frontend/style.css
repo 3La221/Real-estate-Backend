@@ -26,13 +26,14 @@ Version: 1.0
 :root {
     --primary-color: #03a9f4;
     --secondary-color: #f95d02;
-    --accent-color: #5f3afc;
+    --accent-color: #CBA135;
 	--navbar-bg: #0B2B3C;
 	--footer-variant1: #05202F;
 	--footer-variant2: #062231;
 	--footer-variant3: #092635;
 
-	--accent-color-rgb: 95, 58, 252;
+	--accent-color-rgb: 203, 161, 53;
+	--navbar-bg-rgb: 11, 43, 60;
 }
 
 body{
@@ -673,7 +674,7 @@ img{
 	margin: 0 auto;
 	align-items: center;
 	justify-content: center;
-	color: #5e2ced;
+	color: var(--accent-color);
 }
 @-webkit-keyframes ripple-red {
     0% {
@@ -2274,7 +2275,7 @@ img{
 	top: 0;
 	left: 0;
 	z-index: -1;
-	background: rgb(94, 44, 237,.8);
+	background: rgba(var(--navbar-bg-rgb, 11, 43, 60), 0.88);
 }
 .contact-form-info h2 {
 	font-size: 30px;
@@ -2597,7 +2598,7 @@ h2.accordion-header {
 	text-transform: uppercase;
 	font-size: 13px;
 	font-weight: 600;
-	background: #5e2ced0a;
+	background: rgba(var(--accent-color-rgb, 203, 161, 53), 0.04);
 	-webkit-transition: all .4s ease-in-out;
 	transition: all .4s ease-in-out;
 }
