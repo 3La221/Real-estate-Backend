@@ -3,7 +3,8 @@
 {% load static %}
 {% static "assets/img/breadcrumb.jpg" as breadcrumb_bg %}
 
-{% block title %}Properties – BHouse{% endblock %}
+{% block title %}{{current_agency.name}}{% endblock %}
+
 
 {% block extra_css %}
 <style>
@@ -984,7 +985,7 @@
 <!--offcanvas menu area end-->
 
 <!-- Start Breadcrumb Area -->
-<section class="breadcrumb-area section-padding" style="background-image:url('{{ properties.first.agency.cover_image.url }}');">
+<section class="breadcrumb-area section-padding" style="background-image:url('{% if current_agency and current_agency.cover_image %}{{ current_agency.cover_image.url }}{% else %}{% static 'assets/img/breadcrumb.jpg' %}{% endif %}');">
     <div class="container">
         <div class="row">
             <div class="col-lg-12">
